@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finalyze — NJK Dynamics | Contratos de Financiamento</title>
+  <meta name="description" content="Análise de contratos de financiamento com extração via IA e cronograma de amortização." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../src/styles/tokens.css" />
+  <link rel="stylesheet" href="../../src/styles/finalyze.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <div class="brand-logo">NJK</div>
+        <div>
+          <div class="brand-name">NJK Dynamics</div>
+          <div class="brand-sub">FINALYZE · Financiamentos</div>
+        </div>
+      </div>
+      <div class="topbar-badge">Âmbar</div>
+    </header>
+
+    <main class="main">
+      <section class="hero">
+        <h1 class="hero-title">Análise de <span class="gradient-text">Contratos</span></h1>
+        <p class="hero-desc">Envie o PDF do contrato de financiamento. Extraímos os dados cadastrais e geramos o cronograma de amortização.</p>
+        <button type="button" class="link-config hidden" id="showApiKeyBtn">Alterar chave de API</button>
+      </section>
+
+      <section class="panel panel-config" id="configSection">
+        <div class="panel-head">
+          <h2>Configuração</h2>
+        </div>
+        <div class="config-row">
+          <label for="apiKeyInput">Chave da API (Google AI Studio)</label>
+          <div class="config-inputs">
+            <input type="password" id="apiKeyInput" placeholder="Cole sua API Key" autocomplete="off" />
+            <button type="button" class="btn btn-secondary" id="saveApiKeyBtn">Salvar</button>
+          </div>
+          <p class="helper-text">A chave fica apenas no seu navegador (localStorage).</p>
+        </div>
+      </section>
+
+      <section class="panel panel-upload" id="uploadSection">
+        <div id="dropZone" class="drop-zone" role="button" tabindex="0" aria-label="Enviar PDF do contrato">
+          <div class="drop-zone-glow"></div>
+          <div class="upload-icon" aria-hidden="true">📄</div>
+          <h3>Contrato de financiamento (PDF)</h3>
+          <p>Arraste o arquivo aqui ou clique para selecionar</p>
+          <input type="file" id="fileInput" accept="application/pdf" hidden />
+        </div>
+      </section>
+
+      <section class="panel panel-processing hidden" id="processingSection">
+        <div class="spinner" aria-hidden="true"></div>
+        <p id="processingText" class="processing-text">Lendo documento...</p>
+      </section>
+
+      <section class="panel panel-results hidden" id="resultsSection">
+        <div class="results-toolbar">
+          <h2>Relatório do contrato</h2>
+          <div class="toolbar-actions">
+            <button type="button" class="btn btn-ghost" id="newUploadBtn">Novo PDF</button>
+            <button type="button" class="btn btn-primary" id="downloadBtn">Exportar Excel</button>
+          </div>
+        </div>
+
+        <article class="contract-header" id="contractHeader">
+          <div class="contract-header-title">
+            <span class="contract-label">Resumo do financiamento</span>
+            <span class="contract-id" id="hdrContrato">—</span>
+          </div>
+          <div class="meta-grid" id="metaGrid"></div>
+        </article>
+
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Cronograma de amortização</h3>
+            <span class="table-meta" id="tableMeta"></span>
+          </div>
+          <div class="table-scroll">
+            <table class="amort-table" id="amortTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Saldo devedor</th>
+                  <th>Vencimento</th>
+                  <th>Amortização</th>
+                  <th>Juros</th>
+                  <th>Total pago</th>
+                </tr>
+              </thead>
+              <tbody id="amortTableBody"></tbody>
+              <tfoot id="amortTableFoot"></tfoot>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>NJK Dynamics · Finalyze</span>
+      <span id="footerTs" class="footer-ts"></span>
+    </footer>
+  </div>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script src="../../src/pages/finalyze.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+__pycache__/
+venv/
+.vscode/
+
+# Variáveis de ambiente (nunca versionar segredos)
+.env
+.env.*
+*.env
+!.env.example
