@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Juros de Contratos</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <!-- SheetJS (Excel) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Calculadora de Contratos</h1>
+            <p>Extraia dados de PDFs com IA e calcule o saldo devedor atualizado</p>
+        </header>
+
+
+
+        <section class="upload-section">
+            <div id="dropZone" class="drop-zone">
+                <div class="upload-icon">📄</div>
+                <h3>Arraste o PDF do contrato aqui</h3>
+                <p>Ou clique para selecionar o arquivo</p>
+                <input type="file" id="fileInput" accept="application/pdf" hidden>
+            </div>
+        </section>
+
+        <section id="processingSection" class="processing-section hidden">
+            <div class="spinner"></div>
+            <p id="processingText">Lendo documento...</p>
+        </section>
+
+        <section id="resultsSection" class="results-section hidden">
+            <h2>Dados Extraídos e Calculados</h2>
+            
+            <div class="cards-grid">
+                <div class="result-card">
+                    <span class="card-label">Valor Principal</span>
+                    <span class="card-value" id="resPrincipal">R$ 0,00</span>
+                </div>
+                <div class="result-card">
+                    <span class="card-label">Data de Vencimento</span>
+                    <span class="card-value" id="resDueDate">-</span>
+                </div>
+                <div class="result-card">
+                    <span class="card-label">Taxa de Juros</span>
+                    <span class="card-value" id="resInterestRate">0%</span>
+                </div>
+                <div class="result-card">
+                    <span class="card-label">Sistema</span>
+                    <span class="card-value" id="resSystem">-</span>
+                </div>
+            </div>
+
+            <div class="summary-box">
+                <h3>Resumo Atualizado (Hoje)</h3>
+                <div class="summary-row">
+                    <span>Dias em Atraso:</span>
+                    <span id="resDays">0</span>
+                </div>
+                <div class="summary-row highlight">
+                    <span>Saldo Devedor Atual:</span>
+                    <span id="resTotal">R$ 0,00</span>
+                </div>
+            </div>
+
+            <button id="downloadBtn" class="primary-btn">Download Planilha Excel</button>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
