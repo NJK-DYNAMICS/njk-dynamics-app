@@ -1,39 +1,10 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "cleanUrls": true,
-  "trailingSlash": false,
+  "framework": null,
   "rewrites": [
-    {
-      "source": "/dataware",
-      "destination": "/apps/dataware/index.html"
-    },
-    {
-      "source": "/dataware/",
-      "destination": "/apps/dataware/index.html"
-    },
-    {
-      "source": "/finalyze",
-      "destination": "/apps/finalyze/index.html"
-    },
-    {
-      "source": "/finalyze/",
-      "destination": "/apps/finalyze/index.html"
-    },
-    {
-      "source": "/",
-      "destination": "/apps/nexus/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/src/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=86400"
-        }
-      ]
-    }
+    { "source": "/", "destination": "/apps/nexus/index.html" },
+    { "source": "/dataware", "destination": "/apps/dataware/index.html" },
+    { "source": "/finalyze", "destination": "/apps/finalyze/index.html" }
   ]
 }
