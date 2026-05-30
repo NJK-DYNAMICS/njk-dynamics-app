@@ -1,0 +1,390 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXUS — NJK Dynamics | Portal de Aplicativos</title>
+  <meta name="description" content="Portal central do ecossistema NJK Dynamics. Acesse todos os micro-aplicativos integrados em um único hub de alto desempenho." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../src/styles/tokens.css" />
+  <link rel="stylesheet" href="../../src/styles/nexus.css" />
+</head>
+<body>
+
+  <!-- ══ LOGIN OVERLAY ══════════════════════════════════════════════ -->
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-box">
+      <div class="login-logo-wrap">
+        <div class="login-logo">NJK</div>
+      </div>
+      <div class="login-title">NJK Dynamics</div>
+      <div class="login-sub">NEXUS · <span>Portal de Aplicativos</span></div>
+
+      <label class="login-label" for="login-pass">Senha de Acesso</label>
+      <input
+        class="login-input" type="password" id="login-pass"
+        placeholder="••••••••" autocomplete="current-password" maxlength="64"
+      />
+      <button class="login-btn" id="login-btn" onclick="doLogin()">
+        <span id="login-btn-content">🔓 Entrar no Portal</span>
+      </button>
+      <div class="login-error" id="login-error">⚠ Senha incorreta. Tente novamente.</div>
+
+      <div class="login-footer">
+        NJK Dynamics Ecossistema · Acesso Restrito<br>
+        Supabase · Render · Vercel
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TOPBAR ═════════════════════════════════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-logo">NJK</div>
+      <div>
+        <div class="brand-name">NJK Dynamics</div>
+        <div class="brand-sub">Ecossistema v1.0</div>
+      </div>
+      <div class="nexus-badge">NEXUS</div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-pill" id="api-status-pill">
+        <div class="status-dot"></div>
+        <span id="api-status-text">Verificando...</span>
+      </div>
+      <div class="topbar-clock" id="topbar-clock"></div>
+      <button class="btn-logout" onclick="doLogout()" title="Sair do portal">⎋ Sair</button>
+    </div>
+  </header>
+
+  <!-- ══ MAIN ══════════════════════════════════════════════════════ -->
+  <main class="main" id="main-content">
+
+    <!-- ── HERO ──────────────────────────────────────────────────── -->
+    <section class="hero">
+      <div class="hero-eyebrow">Portal Central do Ecossistema</div>
+      <h1 class="hero-title">
+        Bem-vindo ao<br>
+        <span class="gradient-text">NEXUS</span>
+      </h1>
+      <p class="hero-subtitle">
+        Acesse todos os micro-aplicativos integrados da NJK Dynamics.
+        Dados centralizados, entregáveis premium e fluxos automatizados — em um único hub.
+      </p>
+      <div class="hero-meta">
+        <div class="hero-stat">
+          <div class="hero-stat-value">3</div>
+          <div class="hero-stat-label">Apps Ativos</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-value" id="hero-clientes">--</div>
+          <div class="hero-stat-label">Clientes Cadastrados</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">12</div>
+          <div class="hero-stat-label">Módulos Planejados</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-value" id="hero-api-status">--</div>
+          <div class="hero-stat-label">Status da API</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── APPS SECTION ───────────────────────────────────────────── -->
+    <div class="section-label">Aplicativos do Ecossistema</div>
+
+    <div class="apps-grid">
+
+      <!-- ══ DATAWARE ════════════════════════════════════════════ -->
+      <div class="app-card cyan">
+        <div class="card-header">
+          <div class="card-icon-wrap">🗄️</div>
+          <span class="status-badge badge-live">● Live</span>
+        </div>
+        <div class="card-name">Dataware</div>
+        <div class="card-tag">Central de Dimensões</div>
+        <div class="card-desc">
+          Repositório centralizado de dados corporativos. Gestão de clientes, empresas e contratos — a fonte única de verdade do ecossistema.
+        </div>
+        <div class="quick-stats">
+          <div class="qs-label">Quick Stats · dim_clientes</div>
+          <div class="stat-row">
+            <span class="stat-name">👤 Clientes Cadastrados</span>
+            <span class="stat-val loading" id="dw-total">--</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">✅ Ativos</span>
+            <span class="stat-val loading" id="dw-ativos">--</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">⏸ Inativos / Suspensos</span>
+            <span class="stat-val loading" id="dw-outros">--</span>
+          </div>
+        </div>
+        <a class="btn-access" id="btn-dataware" href="/dataware">
+          ⚡ Acessar Dataware →
+        </a>
+      </div>
+
+      <!-- ══ AGROATA ═════════════════════════════════════════════ -->
+      <div class="app-card emerald">
+        <div class="card-header">
+          <div class="card-icon-wrap">📋</div>
+          <span class="status-badge badge-live">● Live</span>
+        </div>
+        <div class="card-name">AgroAta</div>
+        <div class="card-tag">Gestão de Atas Técnicas</div>
+        <div class="card-desc">
+          Gerador de atas de visitas técnicas a campo. Compila pautas, assinaturas e resoluções em documentos PDF de alta qualidade.
+        </div>
+        <div class="quick-stats">
+          <div class="qs-label">Quick Stats · atas_tecnicas</div>
+          <div class="stat-row">
+            <span class="stat-name">📄 Atas Criadas</span>
+            <span class="stat-val loading" id="aa-atas">--</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">🌾 Produtores Atendidos</span>
+            <span class="stat-val loading" id="aa-produtores">--</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">📅 Criadas Este Mês</span>
+            <span class="stat-val loading" id="aa-mes">--</span>
+          </div>
+        </div>
+        <a class="btn-access" id="btn-agroata" href="#" target="_blank" rel="noopener">
+          ⚡ Acessar AgroAta →
+        </a>
+      </div>
+
+      <!-- ══ FINALYZE ════════════════════════════════════════════ -->
+      <div class="app-card amber">
+        <div class="card-header">
+          <div class="card-icon-wrap">💰</div>
+          <span class="status-badge badge-live">● Live</span>
+        </div>
+        <div class="card-name">Finalyze</div>
+        <div class="card-tag">Calculadora de Juros</div>
+        <div class="card-desc">
+          Auditoria financeira de contratos bancários. OCR integrado para PDFs, cálculo de amortizações e relatórios analíticos de divergências.
+        </div>
+        <div class="quick-stats">
+          <div class="qs-label">Quick Stats · contratos</div>
+          <div class="stat-row">
+            <span class="stat-name">📑 Contratos Processados</span>
+            <span class="stat-val loading" id="fin-contratos">--</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">🔍 PDFs Processados via OCR</span>
+            <span class="stat-val loading" id="fin-pdfs">--</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">📊 Relatórios Gerados</span>
+            <span class="stat-val loading" id="fin-relatorios">--</span>
+          </div>
+        </div>
+        <a class="btn-access" id="btn-finalyze" href="/finalyze">
+          ⚡ Acessar Finalyze →
+        </a>
+      </div>
+
+      <!-- ══ PLACEHOLDERS 4–12 ════════════════════════════════════ -->
+
+      <!-- Módulo 04 -->
+      <div class="app-card placeholder">
+        <div class="card-header">
+          <div class="card-icon-wrap">📊</div>
+          <span class="status-badge badge-soon">Em Breve</span>
+        </div>
+        <div class="card-name">Módulo 04</div>
+        <div class="card-tag" style="color:var(--text-muted)">Dashboard Analytics</div>
+        <div class="card-desc">Painel analítico consolidado com métricas cruzadas de todos os módulos do ecossistema.</div>
+        <div class="quick-stats">
+          <div class="qs-label">Status</div>
+          <div class="stat-row">
+            <span class="stat-name">🔧 Fase</span>
+            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
+          </div>
+        </div>
+        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
+      </div>
+
+      <!-- Módulo 05 -->
+      <div class="app-card placeholder">
+        <div class="card-header">
+          <div class="card-icon-wrap">🤖</div>
+          <span class="status-badge badge-soon">Em Breve</span>
+        </div>
+        <div class="card-name">Módulo 05</div>
+        <div class="card-tag" style="color:var(--text-muted)">Automação & IA</div>
+        <div class="card-desc">Módulo de automação inteligente com processamento de linguagem natural e fluxos autônomos.</div>
+        <div class="quick-stats">
+          <div class="qs-label">Status</div>
+          <div class="stat-row">
+            <span class="stat-name">🔧 Fase</span>
+            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
+          </div>
+        </div>
+        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
+      </div>
+
+      <!-- Módulo 06 -->
+      <div class="app-card placeholder">
+        <div class="card-header">
+          <div class="card-icon-wrap">🗺️</div>
+          <span class="status-badge badge-soon">Em Breve</span>
+        </div>
+        <div class="card-name">Módulo 06</div>
+        <div class="card-tag" style="color:var(--text-muted)">Gestão Territorial</div>
+        <div class="card-desc">Mapeamento de regiões, rotas de visita e cobertura geográfica de produtores rurais.</div>
+        <div class="quick-stats">
+          <div class="qs-label">Status</div>
+          <div class="stat-row">
+            <span class="stat-name">🔧 Fase</span>
+            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
+          </div>
+        </div>
+        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
+      </div>
+
+      <!-- Módulo 07 -->
+      <div class="app-card placeholder">
+        <div class="card-header">
+          <div class="card-icon-wrap">📦</div>
+          <span class="status-badge badge-soon">Em Breve</span>
+        </div>
+        <div class="card-name">Módulo 07</div>
+        <div class="card-tag" style="color:var(--text-muted)">Gestão de Produtos</div>
+        <div class="card-desc">Catálogo de insumos, produtos agrícolas e gestão de estoque integrada ao ecossistema.</div>
+        <div class="quick-stats">
+          <div class="qs-label">Status</div>
+          <div class="stat-row">
+            <span class="stat-name">🔧 Fase</span>
+            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
+          </div>
+        </div>
+        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
+      </div>
+
+      <!-- Módulo 08 -->
+      <div class="app-card placeholder">
+        <div class="card-header">
+          <div class="card-icon-wrap">🔐</div>
+          <span class="status-badge badge-soon">Em Breve</span>
+        </div>
+        <div class="card-name">Módulo 08</div>
+        <div class="card-tag" style="color:var(--text-muted)">Gestão de Acessos</div>
+        <div class="card-desc">Controle de permissões, papéis de usuários e auditoria de acessos por módulo.</div>
+        <div class="quick-stats">
+          <div class="qs-label">Status</div>
+          <div class="stat-row">
+            <span class="stat-name">🔧 Fase</span>
+            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
+          </div>
+        </div>
+        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
+      </div>
+
+      <!-- Módulo 09 -->
+      <div class="app-card placeholder">
+        <div class="card-header">
+          <div class="card-icon-wrap">📡</div>
+          <span class="status-badge badge-soon">Em Breve</span>
+        </div>
+        <div class="card-name">Módulo 09</div>
+        <div class="card-tag" style="color:var(--text-muted)">API Gateway</div>
+        <div class="card-desc">Interface unificada para monitoramento de todas as APIs e serviços do ecossistema em tempo real.</div>
+        <div class="quick-stats">
+          <div class="qs-label">Status</div>
+          <div class="stat-row">
+            <span class="stat-name">🔧 Fase</span>
+            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
+          </div>
+        </div>
+        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
+      </div>
+
+      <!-- Módulo 10 -->
+      <div class="app-card placeholder">
+        <div class="card-header">
+          <div class="card-icon-wrap">📬</div>
+          <span class="status-badge badge-soon">Em Breve</span>
+        </div>
+        <div class="card-name">Módulo 10</div>
+        <div class="card-tag" style="color:var(--text-muted)">Comunicação</div>
+        <div class="card-desc">Envio automatizado de relatórios, notificações e documentos para clientes e produtores.</div>
+        <div class="quick-stats">
+          <div class="qs-label">Status</div>
+          <div class="stat-row">
+            <span class="stat-name">🔧 Fase</span>
+            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
+          </div>
+        </div>
+        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
+      </div>
+
+      <!-- Módulo 11 -->
+      <div class="app-card placeholder">
+        <div class="card-header">
+          <div class="card-icon-wrap">🔗</div>
+          <span class="status-badge badge-soon">Em Breve</span>
+        </div>
+        <div class="card-name">Módulo 11</div>
+        <div class="card-tag" style="color:var(--text-muted)">Integrações</div>
+        <div class="card-desc">Conectores com ERPs externos, bancos de dados parceiros e sistemas legados do setor agroindustrial.</div>
+        <div class="quick-stats">
+          <div class="qs-label">Status</div>
+          <div class="stat-row">
+            <span class="stat-name">🔧 Fase</span>
+            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
+          </div>
+        </div>
+        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
+      </div>
+
+      <!-- Módulo 12 -->
+      <div class="app-card placeholder">
+        <div class="card-header">
+          <div class="card-icon-wrap">🧪</div>
+          <span class="status-badge badge-soon">Em Breve</span>
+        </div>
+        <div class="card-name">Módulo 12</div>
+        <div class="card-tag" style="color:var(--text-muted)">Sandbox</div>
+        <div class="card-desc">Ambiente de testes e homologação para novos módulos antes de entrar em produção no ecossistema.</div>
+        <div class="quick-stats">
+          <div class="qs-label">Status</div>
+          <div class="stat-row">
+            <span class="stat-name">🔧 Fase</span>
+            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
+          </div>
+        </div>
+        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
+      </div>
+
+    </div><!-- /apps-grid -->
+  </main>
+
+  <!-- ══ FOOTER ════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-left">
+      <div class="brand-logo" style="width:28px;height:28px;font-size:11px;box-shadow:0 0 12px rgba(37,99,235,0.3)">NJK</div>
+      <span class="footer-text">NJK Dynamics · NEXUS v1.0</span>
+    </div>
+    <div class="footer-right">
+      Ecossistema Modular · Supabase · Render · Vercel<br>
+      <span id="footer-ts" style="font-size:10px;color:var(--text-muted);opacity:.6"></span>
+    </div>
+  </footer>
+
+  <!-- ══ TOAST CONTAINER ═══════════════════════════════════════════ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="../../src/pages/nexus.js"></script>
+</body>
+</html>
