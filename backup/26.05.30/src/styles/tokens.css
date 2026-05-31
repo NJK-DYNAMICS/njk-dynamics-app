@@ -1,0 +1,26 @@
+﻿/* NJK Dynamics — design tokens (SSOT: master_context.md) */
+:root {
+  --bg-base:        #080c14;
+  --bg-surface:     #0d1420;
+  --bg-card:        #111827;
+  --bg-input:       #0d1420;
+  --border:         #1e2d45;
+  --border-focus:   #2563eb;
+  --border-glow:    rgba(37, 99, 235, 0.4);
+  --accent-blue:    #2563eb;
+  --accent-cyan:    #06b6d4;
+  --accent-emerald: #10b981;
+  --accent-amber:   #f59e0b;
+  --accent-rose:    #f43f5e;
+  --accent-purple:  #7c3aed;
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted:     #475569;
+  --text-accent:    #60a5fa;
+  --gradient-brand: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  --gradient-card:  linear-gradient(145deg, #111827 0%, #0d1420 100%);
+  --gradient-glow:  radial-gradient(ellipse at top left, rgba(37,99,235,0.12) 0%, transparent 60%);
+  --font-sans:  'Inter', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', monospace;
+  --transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+}

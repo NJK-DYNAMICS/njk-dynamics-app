@@ -1,0 +1,8 @@
+# Credenciais Supabase (obrigatório)
+SUPABASE_URL=https://momrqzxgcnoppbbuitov.supabase.co
+SUPABASE_KEY=sb_publishable_mMNlT9eQmA1fiEjHJmw96A_JeYDEN32
+
+# URLs dos outros serviços (preencher conforme subirem no Render)
+DATAWARE_API_URL=https://njk-api.onrender.com
+AGROATA_API_URL=
+FINALYZE_API_URL=

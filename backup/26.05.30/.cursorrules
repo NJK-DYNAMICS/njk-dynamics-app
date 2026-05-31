@@ -1,0 +1,49 @@
+# Cursor Rules — NJK Dynamics Ecossistema
+
+Este arquivo define as diretrizes de desenvolvimento, regras estéticas e padrões técnicos a serem rigorosamente seguidos pelo assistente de IA do Cursor neste projeto.
+
+---
+
+## 1. Visão Geral do Projeto
+Você está trabalhando no ecossistema de micro-aplicativos **NJK Dynamics**. A arquitetura é modular, com foco em aplicativos independentes e específicos, integrados através de um portal centralizado (**NEXUS**) e uma camada de dados unificada via **Supabase** (gerenciada pelo **Dataware**).
+
+---
+
+## 2. Tecnologias & Stack
+*   **Frontends:** HTML5, CSS3 Vanilla (sem Tailwind, a menos que expressamente solicitado), Vanilla JS.
+*   **Tipografia:** `Inter` para UI geral; `JetBrains Mono` para métricas, códigos, tabelas e dados numéricos.
+*   **Backends & APIs:** FastAPI / Flask (Python) hospedados no **Render**.
+*   **Banco de Dados:** **Supabase** (PostgreSQL) atuando como a única fonte de verdade (SSOT).
+*   **Hospedagem:** Vercel (Frontend) e Render (Backend).
+
+---
+
+## 3. Diretrizes de Design & Estética (Tema Dark/Cyber-Tech)
+O design deve sempre impressionar à primeira vista, transmitindo sofisticação técnica:
+*   **Cores de Fundo:**
+    *   Fundo Base (`--bg-base`): `#080c14` (azul espacial ultra-escuro).
+    *   Superfícies (`--bg-surface`): `#0d1420`.
+    *   Cards (`--bg-card`): `#111827`.
+*   **Acentos e Gradientes Neon:**
+    *   Gradiente de Marca: `linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)`.
+    *   Cores de destaque por aplicativo:
+        *   **Dataware:** Ciano (`#06b6d4`)
+        *   **AgroAta:** Esmeralda (`#10b981`)
+        *   **Finalyze:** Âmbar (`#f59e0b`)
+*   **Transições & Efeitos:**
+    *   Hover dinâmico: elevação sutil (`translateY(-5px)`) combinada com um contorno neon brilhante (`box-shadow` na cor específica do aplicativo).
+    *   Backdrop filter e sombras pronunciadas para dar sensação de camadas tridimensionais (Glassmorphism).
+
+---
+
+## 4. Arquitetura de Dados (SSOT)
+*   **Cadastro Central:** Nenhum app deve implementar cadastros isolados de clientes ou empresas.
+*   **Identificadores Únicos:** Sempre relacione dados usando `cliente_id` ou `empresa_id` vindos da API do Dataware.
+*   **Latência & Resiliência:** Chamadas de rede no Frontend devem conter tratamentos de erro (`try/catch`), limites de tempo (`AbortSignal.timeout`) e exibir estados de carregamento (spinners/animações de blink) de forma graciosa.
+
+---
+
+## 5. Diretriz de Output
+*   Foco total na qualidade do entregável final (geração de relatórios, gráficos elegantes ou exportação de PDFs refinados).
+*   Preserve comentários e docstrings existentes.
+*   Não crie arquivos com placeholders vazios. Escreva código funcional e robusto.

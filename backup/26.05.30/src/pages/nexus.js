@@ -129,7 +129,7 @@
       const heroStatus = document.getElementById('hero-api-status');
 
       try {
-        const r = await fetch(CONFIG.apiCore + '/health', { signal: AbortSignal.timeout(15000) });
+        const r = await fetch(CONFIG.apiCore + '/health', { signal: AbortSignal.timeout(5000) });
         if (r.ok) {
           pill.style.cssText  = 'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:var(--accent-emerald)';
           pill.querySelector('.status-dot').style.background = 'var(--accent-emerald)';
@@ -151,13 +151,24 @@
     ══════════════════════════════════════════════════════ */
     async function loadDatawareMetrics() {
       try {
-        const r = await fetch(CONFIG.apiCore + '/api/stats/dataware', { signal: AbortSignal.timeout(15000) });
-        if (!r.ok) throw new Error();
-        const d = await r.json();
-        setMetric('dw-total',  d.total  ?? '--');
-        setMetric('dw-ativos', d.ativos ?? '--');
-        setMetric('dw-outros', d.outros ?? '--');
-        setMetric('hero-clientes', d.total ?? '--');
+        const [rA, rI, rS] = await Promise.all([
+          fetch(CONFIG.apiCore + '/api/clientes?status=ativo&limite=9999', { signal: AbortSignal.timeout(8000) }),
+          fetch(CONFIG.apiCore + '/api/clientes?status=inativo&limite=9999', { signal: AbortSignal.timeout(8000) }),
+          fetch(CONFIG.apiCore + '/api/clientes?status=suspenso&limite=9999', { signal: AbortSignal.timeout(8000) }),
+        ]);
+
+        let ativos = 0, inativos = 0, suspensos = 0;
+        if (rA.ok) { const d = await rA.json(); ativos    = (d.clientes || []).length; }
+        if (rI.ok) { const d = await rI.json(); inativos  = (d.clientes || []).length; }
+        if (rS.ok) { const d = await rS.json(); suspensos = (d.clientes || []).length; }
+
+        const total = ativos + inativos + suspensos;
+
+        setMetric('dw-total',  total);
+        setMetric('dw-ativos', ativos);
+        setMetric('dw-outros', inativos + suspensos);
+        setMetric('hero-clientes', total);
+
       } catch {
         ['dw-total','dw-ativos','dw-outros'].forEach(setMetricError);
       }
@@ -170,14 +181,17 @@
          Retorno esperado: { total: N, produtores: N, mes: N }
     ══════════════════════════════════════════════════════ */
     async function loadAgroAtaMetrics() {
+      if (!CONFIG.apiAgroAta) {
+        ['aa-atas','aa-produtores','aa-mes'].forEach(setMetricError);
+        return;
+      }
       try {
-        const r = await fetch(CONFIG.apiCore + '/api/stats/agroata', { signal: AbortSignal.timeout(15000) });
+        const r = await fetch(CONFIG.apiAgroAta + '/api/atas/stats', { signal: AbortSignal.timeout(8000) });
         if (!r.ok) throw new Error();
         const d = await r.json();
-        if (!d.disponivel) { ['aa-atas','aa-produtores','aa-mes'].forEach(setMetricError); return; }
-        setMetric('aa-atas',       d.total      ?? '--');
-        setMetric('aa-produtores', d.produtores ?? '--');
-        setMetric('aa-mes',        d.mes        ?? '--');
+        setMetric('aa-atas',       d.total       ?? '--');
+        setMetric('aa-produtores', d.produtores  ?? '--');
+        setMetric('aa-mes',        d.mes         ?? '--');
       } catch {
         ['aa-atas','aa-produtores','aa-mes'].forEach(setMetricError);
       }
@@ -190,11 +204,14 @@
          Retorno esperado: { contratos: N, pdfs: N, relatorios: N }
     ══════════════════════════════════════════════════════ */
     async function loadFinalyzeMetrics() {
+      if (!CONFIG.apiFinalyze) {
+        ['fin-contratos','fin-pdfs','fin-relatorios'].forEach(setMetricError);
+        return;
+      }
       try {
-        const r = await fetch(CONFIG.apiCore + '/api/stats/finalyze', { signal: AbortSignal.timeout(15000) });
+        const r = await fetch(CONFIG.apiFinalyze + '/api/contratos/stats', { signal: AbortSignal.timeout(8000) });
         if (!r.ok) throw new Error();
         const d = await r.json();
-        if (!d.disponivel) { ['fin-contratos','fin-pdfs','fin-relatorios'].forEach(setMetricError); return; }
         setMetric('fin-contratos',  d.contratos  ?? '--');
         setMetric('fin-pdfs',       d.pdfs       ?? '--');
         setMetric('fin-relatorios', d.relatorios ?? '--');

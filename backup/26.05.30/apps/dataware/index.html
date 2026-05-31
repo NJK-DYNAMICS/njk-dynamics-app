@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NJK Dynamics — Painel DATAWARE</title>
+  <meta name="description" content="Painel administrativo corporativo do NJK DATAWARE — gerenciamento centralizado de dimensões de dados." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../src/styles/tokens.css" />
+  <link rel="stylesheet" href="../../src/styles/dataware.css" />
+</head>
+<body>
+
+  <!-- ══ TOPBAR ══════════════════════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-logo">NJK</div>
+      <div>
+        <div class="brand-name">NJK Dynamics</div>
+        <div class="brand-sub">DATAWARE v1.0</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-pill" id="api-status-pill">
+        <div class="status-dot"></div>
+        <span id="api-status-text">Verificando...</span>
+      </div>
+      <div class="topbar-clock" id="topbar-clock"></div>
+    </div>
+  </header>
+
+  <!-- ══ SIDEBAR ═════════════════════════════════════════ -->
+  <nav class="sidebar">
+    <div class="sidebar-section-label">Dimensoes</div>
+    <a class="sidebar-item active" href="#" onclick="return false;">
+      <span class="sidebar-icon">&#128100;</span>
+      <span>Clientes</span>
+      <span class="sidebar-badge" id="badge-count">--</span>
+    </a>
+    <a class="sidebar-item" href="#" onclick="return false;" style="opacity:.4;cursor:not-allowed">
+      <span class="sidebar-icon">&#127970;</span>
+      <span>Empresas</span>
+    </a>
+    <a class="sidebar-item" href="#" onclick="return false;" style="opacity:.4;cursor:not-allowed">
+      <span class="sidebar-icon">&#128230;</span>
+      <span>Produtos</span>
+    </a>
+    <a class="sidebar-item" href="#" onclick="return false;" style="opacity:.4;cursor:not-allowed">
+      <span class="sidebar-icon">&#127757;</span>
+      <span>Regioes</span>
+    </a>
+    <div class="sidebar-section-label" style="margin-top:12px">Sistema</div>
+    <a class="sidebar-item" href="https://njk-api.onrender.com/docs" target="_blank">
+      <span class="sidebar-icon">&#128279;</span>
+      <span>API Docs</span>
+    </a>
+    <a class="sidebar-item" href="https://njk-api.onrender.com/health" target="_blank">
+      <span class="sidebar-icon">&#128154;</span>
+      <span>Health Check</span>
+    </a>
+  </nav>
+
+  <!-- ══ MODAL DE CONFIRMACAO DE EXCLUSAO ════════════════ -->
+  <div class="modal-overlay hidden" id="delete-modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-icon">&#128465;</div>
+      <div class="modal-title" id="modal-title">Confirmar Exclusao</div>
+      <div class="modal-desc">
+        Voce esta prestes a remover permanentemente o cliente<br>
+        <span class="modal-cliente-name" id="modal-cliente-name"></span>.<br><br>
+        Esta acao nao pode ser desfeita.
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="btn-modal-cancel" onclick="closeDeleteModal()">Cancelar</button>
+        <button class="btn-confirm-delete" id="btn-modal-confirm" onclick="confirmDelete()">
+          <span id="btn-confirm-content">&#128465; Excluir</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MAIN ════════════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-breadcrumb">DATAWARE / <span>Dimensao de Clientes</span></div>
+      <h1 class="page-title">Gerenciador de Clientes</h1>
+      <p class="page-subtitle">Cadastro e manutencao da dimensao de clientes no nucleo central de dados.</p>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card blue">
+        <span class="kpi-icon">&#128101;</span>
+        <div class="kpi-value" id="kpi-total">--</div>
+        <div class="kpi-label">Total de Clientes</div>
+      </div>
+      <div class="kpi-card emerald">
+        <span class="kpi-icon">&#9989;</span>
+        <div class="kpi-value" id="kpi-ativos">--</div>
+        <div class="kpi-label">Clientes Ativos</div>
+      </div>
+      <div class="kpi-card amber">
+        <span class="kpi-icon">&#9208;</span>
+        <div class="kpi-value" id="kpi-inativos">--</div>
+        <div class="kpi-label">Clientes Inativos</div>
+      </div>
+      <div class="kpi-card cyan">
+        <span class="kpi-icon">&#128683;</span>
+        <div class="kpi-value" id="kpi-suspensos">--</div>
+        <div class="kpi-label">Suspensos</div>
+      </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+
+      <!-- ── Tabela de Clientes ─────────────────────────── -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="panel-icon">&#128203;</span>
+            <div>
+              <div class="panel-title">Registro de Clientes</div>
+              <div class="panel-subtitle">dim_clientes · Supabase</div>
+            </div>
+          </div>
+          <button class="btn-icon" id="btn-refresh" title="Atualizar lista" onclick="loadClientes()">&#8635;</button>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <span style="color:var(--text-muted)">&#128269;</span>
+            <input type="text" id="search-input" placeholder="Buscar por nome..." oninput="filterTable()" />
+          </div>
+          <div class="filter-tabs">
+            <button class="filter-tab active" id="tab-ativo"    onclick="setFilter('ativo')">Ativos</button>
+            <button class="filter-tab"        id="tab-inativo"  onclick="setFilter('inativo')">Inativos</button>
+            <button class="filter-tab"        id="tab-suspenso" onclick="setFilter('suspenso')">Suspensos</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="clientes-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Status</th>
+                <th>Criado em</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="clientes-tbody">
+              <tr><td colspan="5">
+                <div class="empty-state">
+                  <div class="empty-icon">&#9203;</div>
+                  <div class="empty-title">Carregando dados...</div>
+                  <div class="empty-desc">Aguarde a conexao com a API.</div>
+                </div>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <span class="table-footer-info" id="table-info">-- registros</span>
+          <span class="table-footer-info" id="table-ts"></span>
+        </div>
+      </div>
+
+      <!-- ── Painel direito ─────────────────────────────── -->
+      <div class="form-panel">
+
+        <!-- Form Novo Cliente -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <span class="panel-icon">&#43;</span>
+              <div>
+                <div class="panel-title">Novo Cliente</div>
+                <div class="panel-subtitle">Adicionar a dimensao</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-body">
+            <div class="form-group">
+              <label class="form-label" for="input-nome">Nome / Razao Social</label>
+              <input class="form-input" type="text" id="input-nome"
+                placeholder="Ex: Acme Corporation Ltda." maxlength="200" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="input-status">Status Inicial</label>
+              <select class="form-input form-select" id="input-status">
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+                <option value="suspenso">Suspenso</option>
+              </select>
+            </div>
+            <button class="btn-primary" id="btn-add" onclick="addCliente()">
+              <span id="btn-add-content">+ Cadastrar Cliente</span>
+            </button>
+            <button class="btn-secondary" onclick="clearForm()">Limpar Campos</button>
+          </div>
+        </div>
+
+        <!-- Status da API -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <span class="panel-icon">&#128279;</span>
+              <div>
+                <div class="panel-title">NJK Core API</div>
+                <div class="panel-subtitle">Status da conexao</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-body" style="gap:12px">
+            <div class="api-url-display"><span>URL:</span><span id="display-api-url">https://njk-api.onrender.com</span></div>
+            <div class="api-url-display"><span>Modulo:</span><span>dim_clientes</span></div>
+            <div class="api-url-display"><span>IDs:</span><span>Sequencial (1, 2, 3...)</span></div>
+            <div class="api-url-display"><span>Ultimo sync:</span><span id="display-last-sync">--</span></div>
+            <div class="form-divider"></div>
+            <p style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);line-height:1.6">
+              Configure a URL da API abaixo:
+            </p>
+            <input class="form-input" type="text" id="api-url-input"
+              value="https://njk-api.onrender.com"
+              style="font-family:var(--font-mono);font-size:12px"
+              onchange="onApiUrlChange()" />
+          </div>
+        </div>
+
+      </div><!-- /form-panel -->
+    </div><!-- /content-grid -->
+  </main>
+
+  <!-- ══ TOAST CONTAINER ═════════════════════════════════ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="../../src/pages/dataware-clientes.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -8,383 +8,392 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../../src/styles/tokens.css" />
-  <link rel="stylesheet" href="../../src/styles/nexus.css" />
+  <style>
+:root {
+  --bg-base:#080c14;--bg-surface:#0d1420;--bg-card:#111827;--bg-input:#0d1420;
+  --border:#1e2d45;--border-focus:#2563eb;--border-glow:rgba(37,99,235,0.4);
+  --accent-blue:#2563eb;--accent-cyan:#06b6d4;--accent-emerald:#10b981;
+  --accent-amber:#f59e0b;--accent-rose:#f43f5e;--accent-purple:#7c3aed;
+  --text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#475569;--text-accent:#60a5fa;
+  --gradient-brand:linear-gradient(135deg,#2563eb 0%,#7c3aed 100%);
+  --gradient-card:linear-gradient(145deg,#111827 0%,#0d1420 100%);
+  --gradient-glow:radial-gradient(ellipse at top left,rgba(37,99,235,0.12) 0%,transparent 60%);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;--radius-xl:24px;
+  --shadow-md:0 4px 20px rgba(0,0,0,0.6);--shadow-glow:0 0 40px rgba(37,99,235,0.15);
+  --font-sans:'Inter',system-ui,sans-serif;--font-mono:'JetBrains Mono',monospace;
+  --transition:all 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-sans);background-color:var(--bg-base);color:var(--text-primary);min-height:100vh;background-image:var(--gradient-glow);overflow-x:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-base)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--accent-blue)}
+.login-overlay{position:fixed;inset:0;z-index:1000;background:var(--bg-base);background-image:radial-gradient(ellipse at 15% 25%,rgba(37,99,235,0.18) 0%,transparent 50%),radial-gradient(ellipse at 85% 75%,rgba(124,58,237,0.12) 0%,transparent 50%);display:flex;align-items:center;justify-content:center}
+.login-overlay.hidden{display:none}
+.login-overlay::before{content:'';position:absolute;inset:0;background-image:radial-gradient(1px 1px at 20% 30%,rgba(37,99,235,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 80% 20%,rgba(6,182,212,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 50% 70%,rgba(124,58,237,0.35) 0%,transparent 100%),radial-gradient(1px 1px at 30% 80%,rgba(16,185,129,0.25) 0%,transparent 100%);animation:bg-drift 12s ease-in-out infinite alternate;pointer-events:none}
+@keyframes bg-drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(8px,-12px) scale(1.02)}}
+.login-box{position:relative;z-index:1;width:400px;max-width:92vw;background:var(--gradient-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:52px 44px 44px;box-shadow:0 32px 80px rgba(0,0,0,0.85),0 0 80px rgba(37,99,235,0.07);animation:login-in 0.55s cubic-bezier(0.4,0,0.2,1)}
+@keyframes login-in{from{opacity:0;transform:translateY(24px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.login-logo-wrap{display:flex;align-items:center;justify-content:center;margin-bottom:28px}
+.login-logo{width:64px;height:64px;background:var(--gradient-brand);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;box-shadow:0 0 40px rgba(37,99,235,0.55);animation:logo-pulse 3s ease-in-out infinite}
+@keyframes logo-pulse{0%,100%{box-shadow:0 0 40px rgba(37,99,235,0.55)}50%{box-shadow:0 0 60px rgba(124,58,237,0.65)}}
+.login-title{text-align:center;font-size:24px;font-weight:800;letter-spacing:-0.5px;margin-bottom:5px}
+.login-sub{text-align:center;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:36px}
+.login-sub span{color:var(--text-accent)}
+.login-label{display:block;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);font-family:var(--font-mono);margin-bottom:9px}
+.login-input{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;font-family:var(--font-mono);font-size:20px;letter-spacing:0.35em;color:var(--text-primary);outline:none;transition:var(--transition);text-align:center;margin-bottom:20px}
+.login-input:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px var(--border-glow)}
+.login-input::placeholder{letter-spacing:0.1em;font-size:16px;color:var(--text-muted)}
+.login-btn{width:100%;background:var(--gradient-brand);border:none;border-radius:var(--radius-sm);padding:14px;font-family:var(--font-sans);font-size:14px;font-weight:700;color:#fff;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:9px}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(37,99,235,0.45)}
+.login-btn:active{transform:translateY(0)}
+.login-btn:disabled{opacity:0.65;cursor:not-allowed;transform:none}
+.login-error{margin-top:14px;text-align:center;font-size:12px;color:var(--accent-rose);font-family:var(--font-mono);opacity:0;transition:opacity 0.25s;display:flex;align-items:center;justify-content:center;gap:6px}
+.login-error.show{opacity:1}
+.login-footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--border);text-align:center;font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:0.08em}
+.topbar{position:fixed;top:0;left:0;right:0;height:64px;background:rgba(8,12,20,0.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 40px;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:14px}
+.brand-logo{width:36px;height:36px;background:var(--gradient-brand);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;box-shadow:0 0 20px rgba(37,99,235,0.4);flex-shrink:0}
+.brand-name{font-size:15px;font-weight:700;letter-spacing:0.01em}
+.brand-sub{font-size:9px;font-weight:500;letter-spacing:0.16em;color:var(--text-accent);text-transform:uppercase;font-family:var(--font-mono)}
+.nexus-badge{padding:3px 12px;background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.28);border-radius:100px;font-size:10px;font-weight:700;color:var(--text-accent);font-family:var(--font-mono);letter-spacing:0.14em}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.status-pill{display:flex;align-items:center;gap:7px;padding:5px 14px;border-radius:100px;font-size:11px;font-weight:500;font-family:var(--font-mono);transition:var(--transition);background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:var(--accent-emerald)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)}}
+.topbar-clock{font-family:var(--font-mono);font-size:12px;color:var(--text-muted)}
+.btn-logout{background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;font-family:var(--font-sans);font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:var(--transition)}
+.btn-logout:hover{border-color:rgba(244,63,94,0.4);color:var(--accent-rose);background:rgba(244,63,94,0.05)}
+.main{margin-top:64px;padding:56px 56px 100px;max-width:1700px;margin-left:auto;margin-right:auto}
+.hero{margin-bottom:64px}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-accent);font-family:var(--font-mono);margin-bottom:14px}
+.hero-eyebrow::before{content:'';display:inline-block;width:28px;height:1px;background:var(--text-accent)}
+.hero-title{font-size:52px;font-weight:800;letter-spacing:-2.5px;line-height:1.04;margin-bottom:18px}
+.hero-title .gradient-text{background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-subtitle{font-size:15px;color:var(--text-secondary);max-width:540px;line-height:1.75}
+.hero-meta{display:flex;align-items:center;gap:28px;margin-top:32px;padding-top:28px;border-top:1px solid var(--border);flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-value{font-size:28px;font-weight:800;font-family:var(--font-mono);letter-spacing:-1px;background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-stat-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-top:2px}
+.hero-divider{width:1px;height:40px;background:var(--border)}
+.section-label{font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:24px;display:flex;align-items:center;gap:14px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.apps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.app-card{background:var(--gradient-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px 22px 22px;position:relative;overflow:hidden;display:flex;flex-direction:column;transition:all 0.26s cubic-bezier(0.4,0,0.2,1)}
+.app-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;transition:all 0.26s ease}
+.app-card::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.3s ease;pointer-events:none;z-index:0}
+.app-card > *{position:relative;z-index:1}
+.app-card.cyan::before{background:var(--accent-cyan)}
+.app-card.cyan::after{background:radial-gradient(ellipse at 50% 0%,rgba(6,182,212,0.08) 0%,transparent 65%)}
+.app-card.cyan:hover{border-color:rgba(6,182,212,0.45);transform:translateY(-5px);box-shadow:0 12px 40px rgba(0,0,0,0.55),0 0 50px rgba(6,182,212,0.18)}
+.app-card.cyan:hover::after{opacity:1}.app-card.cyan:hover::before{height:3px}
+.app-card.emerald::before{background:var(--accent-emerald)}
+.app-card.emerald::after{background:radial-gradient(ellipse at 50% 0%,rgba(16,185,129,0.08) 0%,transparent 65%)}
+.app-card.emerald:hover{border-color:rgba(16,185,129,0.45);transform:translateY(-5px);box-shadow:0 12px 40px rgba(0,0,0,0.55),0 0 50px rgba(16,185,129,0.18)}
+.app-card.emerald:hover::after{opacity:1}.app-card.emerald:hover::before{height:3px}
+.app-card.amber::before{background:var(--accent-amber)}
+.app-card.amber::after{background:radial-gradient(ellipse at 50% 0%,rgba(245,158,11,0.08) 0%,transparent 65%)}
+.app-card.amber:hover{border-color:rgba(245,158,11,0.45);transform:translateY(-5px);box-shadow:0 12px 40px rgba(0,0,0,0.55),0 0 50px rgba(245,158,11,0.18)}
+.app-card.amber:hover::after{opacity:1}.app-card.amber:hover::before{height:3px}
+.app-card.placeholder{border-style:dashed;opacity:0.45;cursor:not-allowed}
+.app-card.placeholder::before{background:var(--text-muted);opacity:0.35}
+.app-card.placeholder:hover{transform:none;box-shadow:none;border-color:var(--border);opacity:0.45}
+.app-card.placeholder:hover::before{height:2px}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+.card-icon-wrap{width:48px;height:48px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;transition:var(--transition)}
+.app-card.cyan .card-icon-wrap{background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.22)}
+.app-card.emerald .card-icon-wrap{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.22)}
+.app-card.amber .card-icon-wrap{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.22)}
+.app-card.placeholder .card-icon-wrap{background:rgba(71,85,105,0.1);border:1px solid rgba(71,85,105,0.18)}
+.app-card.cyan:hover .card-icon-wrap{box-shadow:0 0 20px rgba(6,182,212,0.25)}
+.app-card.emerald:hover .card-icon-wrap{box-shadow:0 0 20px rgba(16,185,129,0.25)}
+.app-card.amber:hover .card-icon-wrap{box-shadow:0 0 20px rgba(245,158,11,0.25)}
+.status-badge{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-family:var(--font-mono);padding:3px 9px;border-radius:100px}
+.badge-live{background:rgba(16,185,129,0.1);color:var(--accent-emerald);border:1px solid rgba(16,185,129,0.25)}
+.badge-offline{background:rgba(244,63,94,0.1);color:var(--accent-rose);border:1px solid rgba(244,63,94,0.25)}
+.badge-soon{background:rgba(71,85,105,0.1);color:var(--text-muted);border:1px solid rgba(71,85,105,0.2)}
+.card-name{font-size:18px;font-weight:700;letter-spacing:-0.4px;margin-bottom:6px;line-height:1.2}
+.card-tag{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;font-family:var(--font-mono);margin-bottom:10px}
+.app-card.cyan .card-tag{color:var(--accent-cyan)}.app-card.emerald .card-tag{color:var(--accent-emerald)}.app-card.amber .card-tag{color:var(--accent-amber)}.app-card.placeholder .card-tag{color:var(--text-muted)}
+.card-desc{font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:20px;flex:1}
+.quick-stats{background:rgba(0,0,0,0.28);border:1px solid rgba(30,45,69,0.8);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:18px;transition:var(--transition)}
+.app-card.cyan:hover .quick-stats{border-color:rgba(6,182,212,0.15)}
+.app-card.emerald:hover .quick-stats{border-color:rgba(16,185,129,0.15)}
+.app-card.amber:hover .quick-stats{border-color:rgba(245,158,11,0.15)}
+.qs-label{font-size:9px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:12px}
+.stat-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0}
+.stat-row+.stat-row{border-top:1px solid rgba(30,45,69,0.7)}
+.stat-name{font-size:11px;color:var(--text-secondary);display:flex;align-items:center;gap:6px}
+.stat-val{font-size:17px;font-weight:700;font-family:var(--font-mono);letter-spacing:-0.5px;transition:var(--transition)}
+.app-card.cyan .stat-val{color:var(--accent-cyan)}.app-card.emerald .stat-val{color:var(--accent-emerald)}.app-card.amber .stat-val{color:var(--accent-amber)}
+.stat-val.loading{opacity:0.4;animation:blink 1.2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.4}50%{opacity:.9}}
+.btn-access{width:100%;padding:12px 16px;border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:13px;font-weight:600;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border:none;letter-spacing:0.01em}
+.app-card.cyan .btn-access{background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.3);color:var(--accent-cyan)}
+.app-card.emerald .btn-access{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:var(--accent-emerald)}
+.app-card.amber .btn-access{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:var(--accent-amber)}
+.app-card.cyan:hover .btn-access{background:rgba(6,182,212,0.25)}
+.app-card.emerald:hover .btn-access{background:rgba(16,185,129,0.25)}
+.app-card.amber:hover .btn-access{background:rgba(245,158,11,0.25)}
+.btn-disabled{width:100%;padding:12px 16px;border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:12px;font-weight:500;color:var(--text-muted);background:rgba(71,85,105,0.08);border:1px solid rgba(71,85,105,0.18);display:flex;align-items:center;justify-content:center;gap:8px;cursor:not-allowed}
+.site-footer{margin-top:80px;padding:24px 56px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.footer-left{display:flex;align-items:center;gap:12px}
+.footer-text{font-size:12px;color:var(--text-muted);font-family:var(--font-mono)}
+.footer-right{font-size:11px;color:var(--text-muted);font-family:var(--font-mono);text-align:right}
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{pointer-events:auto;display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border-radius:var(--radius-md);background:var(--bg-card);border:1px solid var(--border);box-shadow:var(--shadow-md);min-width:280px;max-width:380px;animation:toast-in 0.35s cubic-bezier(0.4,0,0.2,1)}
+.toast.fade-out{animation:toast-out 0.3s cubic-bezier(0.4,0,0.2,1) forwards}
+@keyframes toast-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toast-out{from{opacity:1}to{opacity:0;transform:translateX(20px)}}
+.toast-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.toast-title{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:2px}
+.toast-msg{font-size:12px;color:var(--text-secondary)}
+.toast.success{border-left:3px solid var(--accent-emerald)}.toast.error{border-left:3px solid var(--accent-rose)}.toast.info{border-left:3px solid var(--accent-blue)}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.25);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:1400px){.apps-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:1050px){.apps-grid{grid-template-columns:repeat(2,1fr)}.main{padding:36px 28px 72px}.topbar{padding:0 24px}.site-footer{padding:20px 28px}}
+@media(max-width:640px){.apps-grid{grid-template-columns:1fr}.hero-title{font-size:36px;letter-spacing:-1.5px}.hero-meta{gap:18px}.site-footer{flex-direction:column;gap:10px;text-align:center}.topbar-clock{display:none}}
+  </style>
 </head>
 <body>
-
-  <!-- ══ LOGIN OVERLAY ══════════════════════════════════════════════ -->
   <div class="login-overlay" id="login-overlay">
     <div class="login-box">
-      <div class="login-logo-wrap">
-        <div class="login-logo">NJK</div>
-      </div>
+      <div class="login-logo-wrap"><div class="login-logo">NJK</div></div>
       <div class="login-title">NJK Dynamics</div>
       <div class="login-sub">NEXUS · <span>Portal de Aplicativos</span></div>
-
       <label class="login-label" for="login-pass">Senha de Acesso</label>
-      <input
-        class="login-input" type="password" id="login-pass"
-        placeholder="••••••••" autocomplete="current-password" maxlength="64"
-      />
-      <button class="login-btn" id="login-btn" onclick="doLogin()">
-        <span id="login-btn-content">🔓 Entrar no Portal</span>
-      </button>
+      <input class="login-input" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" maxlength="64" />
+      <button class="login-btn" id="login-btn" onclick="doLogin()"><span id="login-btn-content">🔓 Entrar no Portal</span></button>
       <div class="login-error" id="login-error">⚠ Senha incorreta. Tente novamente.</div>
-
-      <div class="login-footer">
-        NJK Dynamics Ecossistema · Acesso Restrito<br>
-        Supabase · Render · Vercel
-      </div>
+      <div class="login-footer">NJK Dynamics Ecossistema · Acesso Restrito<br>Supabase · Render · Vercel</div>
     </div>
   </div>
 
-  <!-- ══ TOPBAR ═════════════════════════════════════════════════════ -->
   <header class="topbar">
     <div class="topbar-brand">
       <div class="brand-logo">NJK</div>
-      <div>
-        <div class="brand-name">NJK Dynamics</div>
-        <div class="brand-sub">Ecossistema v1.0</div>
-      </div>
+      <div><div class="brand-name">NJK Dynamics</div><div class="brand-sub">Ecossistema v1.0</div></div>
       <div class="nexus-badge">NEXUS</div>
     </div>
     <div class="topbar-right">
-      <div class="status-pill" id="api-status-pill">
-        <div class="status-dot"></div>
-        <span id="api-status-text">Verificando...</span>
-      </div>
+      <div class="status-pill" id="api-status-pill"><div class="status-dot"></div><span id="api-status-text">Verificando...</span></div>
       <div class="topbar-clock" id="topbar-clock"></div>
-      <button class="btn-logout" onclick="doLogout()" title="Sair do portal">⎋ Sair</button>
+      <button class="btn-logout" onclick="doLogout()">⎋ Sair</button>
     </div>
   </header>
 
-  <!-- ══ MAIN ══════════════════════════════════════════════════════ -->
   <main class="main" id="main-content">
-
-    <!-- ── HERO ──────────────────────────────────────────────────── -->
     <section class="hero">
       <div class="hero-eyebrow">Portal Central do Ecossistema</div>
-      <h1 class="hero-title">
-        Bem-vindo ao<br>
-        <span class="gradient-text">NEXUS</span>
-      </h1>
-      <p class="hero-subtitle">
-        Acesse todos os micro-aplicativos integrados da NJK Dynamics.
-        Dados centralizados, entregáveis premium e fluxos automatizados — em um único hub.
-      </p>
+      <h1 class="hero-title">Bem-vindo ao<br><span class="gradient-text">NEXUS</span></h1>
+      <p class="hero-subtitle">Acesse todos os micro-aplicativos integrados da NJK Dynamics. Dados centralizados, entregáveis premium e fluxos automatizados — em um único hub.</p>
       <div class="hero-meta">
-        <div class="hero-stat">
-          <div class="hero-stat-value">3</div>
-          <div class="hero-stat-label">Apps Ativos</div>
-        </div>
+        <div class="hero-stat"><div class="hero-stat-value">3</div><div class="hero-stat-label">Apps Ativos</div></div>
         <div class="hero-divider"></div>
-        <div class="hero-stat">
-          <div class="hero-stat-value" id="hero-clientes">--</div>
-          <div class="hero-stat-label">Clientes Cadastrados</div>
-        </div>
+        <div class="hero-stat"><div class="hero-stat-value" id="hero-clientes">--</div><div class="hero-stat-label">Clientes Cadastrados</div></div>
         <div class="hero-divider"></div>
-        <div class="hero-stat">
-          <div class="hero-stat-value">12</div>
-          <div class="hero-stat-label">Módulos Planejados</div>
-        </div>
+        <div class="hero-stat"><div class="hero-stat-value">12</div><div class="hero-stat-label">Módulos Planejados</div></div>
         <div class="hero-divider"></div>
-        <div class="hero-stat">
-          <div class="hero-stat-value" id="hero-api-status">--</div>
-          <div class="hero-stat-label">Status da API</div>
-        </div>
+        <div class="hero-stat"><div class="hero-stat-value" id="hero-api-status">--</div><div class="hero-stat-label">Status da API</div></div>
       </div>
     </section>
 
-    <!-- ── APPS SECTION ───────────────────────────────────────────── -->
     <div class="section-label">Aplicativos do Ecossistema</div>
-
     <div class="apps-grid">
 
-      <!-- ══ DATAWARE ════════════════════════════════════════════ -->
       <div class="app-card cyan">
-        <div class="card-header">
-          <div class="card-icon-wrap">🗄️</div>
-          <span class="status-badge badge-live">● Live</span>
-        </div>
-        <div class="card-name">Dataware</div>
-        <div class="card-tag">Central de Dimensões</div>
-        <div class="card-desc">
-          Repositório centralizado de dados corporativos. Gestão de clientes, empresas e contratos — a fonte única de verdade do ecossistema.
-        </div>
+        <div class="card-header"><div class="card-icon-wrap">🗄️</div><span class="status-badge badge-live" id="status-dataware">● Live</span></div>
+        <div class="card-name">Dataware</div><div class="card-tag">Central de Dimensões</div>
+        <div class="card-desc">Repositório centralizado de dados corporativos. Gestão de clientes, empresas e contratos — a fonte única de verdade do ecossistema.</div>
         <div class="quick-stats">
           <div class="qs-label">Quick Stats · dim_clientes</div>
-          <div class="stat-row">
-            <span class="stat-name">👤 Clientes Cadastrados</span>
-            <span class="stat-val loading" id="dw-total">--</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-name">✅ Ativos</span>
-            <span class="stat-val loading" id="dw-ativos">--</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-name">⏸ Inativos / Suspensos</span>
-            <span class="stat-val loading" id="dw-outros">--</span>
-          </div>
+          <div class="stat-row"><span class="stat-name">👤 Clientes Cadastrados</span><span class="stat-val loading" id="dw-total">--</span></div>
+          <div class="stat-row"><span class="stat-name">✅ Ativos</span><span class="stat-val loading" id="dw-ativos">--</span></div>
+          <div class="stat-row"><span class="stat-name">⏸ Inativos / Suspensos</span><span class="stat-val loading" id="dw-outros">--</span></div>
         </div>
-        <a class="btn-access" id="btn-dataware" href="/dataware">
-          ⚡ Acessar Dataware →
-        </a>
+        <a class="btn-access" id="btn-dataware" href="https://njkdynamics.vercel.app/dataware">⚡ Acessar Dataware →</a>
       </div>
 
-      <!-- ══ AGROATA ═════════════════════════════════════════════ -->
       <div class="app-card emerald">
-        <div class="card-header">
-          <div class="card-icon-wrap">📋</div>
-          <span class="status-badge badge-live">● Live</span>
-        </div>
-        <div class="card-name">AgroAta</div>
-        <div class="card-tag">Gestão de Atas Técnicas</div>
-        <div class="card-desc">
-          Gerador de atas de visitas técnicas a campo. Compila pautas, assinaturas e resoluções em documentos PDF de alta qualidade.
-        </div>
+        <div class="card-header"><div class="card-icon-wrap">📋</div><span class="status-badge badge-live" id="status-agroata">● Live</span></div>
+        <div class="card-name">AgroAta</div><div class="card-tag">Gestão de Atas Técnicas</div>
+        <div class="card-desc">Gerador de atas de visitas técnicas a campo. Selecione o produtor, preencha a pauta da reunião e gere o PDF de alta qualidade.</div>
         <div class="quick-stats">
           <div class="qs-label">Quick Stats · atas_tecnicas</div>
-          <div class="stat-row">
-            <span class="stat-name">📄 Atas Criadas</span>
-            <span class="stat-val loading" id="aa-atas">--</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-name">🌾 Produtores Atendidos</span>
-            <span class="stat-val loading" id="aa-produtores">--</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-name">📅 Criadas Este Mês</span>
-            <span class="stat-val loading" id="aa-mes">--</span>
-          </div>
+          <div class="stat-row"><span class="stat-name">📄 Atas Criadas</span><span class="stat-val loading" id="aa-atas">--</span></div>
+          <div class="stat-row"><span class="stat-name">🌾 Produtores Atendidos</span><span class="stat-val loading" id="aa-produtores">--</span></div>
+          <div class="stat-row"><span class="stat-name">📅 Criadas Este Mês</span><span class="stat-val loading" id="aa-mes">--</span></div>
         </div>
-        <a class="btn-access" id="btn-agroata" href="#" target="_blank" rel="noopener">
-          ⚡ Acessar AgroAta →
-        </a>
+        <a class="btn-access" id="btn-agroata" href="#">⚡ Acessar AgroAta →</a>
       </div>
 
-      <!-- ══ FINALYZE ════════════════════════════════════════════ -->
       <div class="app-card amber">
-        <div class="card-header">
-          <div class="card-icon-wrap">💰</div>
-          <span class="status-badge badge-live">● Live</span>
-        </div>
-        <div class="card-name">Finalyze</div>
-        <div class="card-tag">Calculadora de Juros</div>
-        <div class="card-desc">
-          Auditoria financeira de contratos bancários. OCR integrado para PDFs, cálculo de amortizações e relatórios analíticos de divergências.
-        </div>
+        <div class="card-header"><div class="card-icon-wrap">💰</div><span class="status-badge badge-live" id="status-finalyze">● Live</span></div>
+        <div class="card-name">Finalyze</div><div class="card-tag">Calculadora de Juros</div>
+        <div class="card-desc">Auditoria financeira de contratos bancários. Upload OCR de cédulas de crédito, cálculo de amortizações e relatórios analíticos de divergências.</div>
         <div class="quick-stats">
           <div class="qs-label">Quick Stats · contratos</div>
-          <div class="stat-row">
-            <span class="stat-name">📑 Contratos Processados</span>
-            <span class="stat-val loading" id="fin-contratos">--</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-name">🔍 PDFs Processados via OCR</span>
-            <span class="stat-val loading" id="fin-pdfs">--</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-name">📊 Relatórios Gerados</span>
-            <span class="stat-val loading" id="fin-relatorios">--</span>
-          </div>
+          <div class="stat-row"><span class="stat-name">📑 Contratos Processados</span><span class="stat-val loading" id="fin-contratos">--</span></div>
+          <div class="stat-row"><span class="stat-name">📂 PDFs Analisados</span><span class="stat-val loading" id="fin-pdfs">--</span></div>
+          <div class="stat-row"><span class="stat-name">📊 Relatórios Emitidos</span><span class="stat-val loading" id="fin-relatorios">--</span></div>
         </div>
-        <a class="btn-access" id="btn-finalyze" href="/finalyze">
-          ⚡ Acessar Finalyze →
-        </a>
+        <a class="btn-access" id="btn-finalyze" href="https://njkdynamics.vercel.app/finalyze">⚡ Acessar Finalyze →</a>
       </div>
 
-      <!-- ══ PLACEHOLDERS 4–12 ════════════════════════════════════ -->
+      <div class="app-card placeholder"><div class="card-header"><div class="card-icon-wrap">📊</div><span class="status-badge badge-soon">Em Breve</span></div><div class="card-name">Módulo 04</div><div class="card-tag" style="color:var(--text-muted)">Business Intelligence</div><div class="card-desc">Dashboards analíticos com KPIs consolidados de todos os módulos do ecossistema.</div><div class="quick-stats"><div class="qs-label">Status</div><div class="stat-row"><span class="stat-name">🔧 Fase</span><span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span></div></div><div class="btn-disabled">🔒 Em Desenvolvimento</div></div>
+      <div class="app-card placeholder"><div class="card-header"><div class="card-icon-wrap">🤖</div><span class="status-badge badge-soon">Em Breve</span></div><div class="card-name">Módulo 05</div><div class="card-tag" style="color:var(--text-muted)">Automação & IA</div><div class="card-desc">Módulo de automação inteligente com processamento de linguagem natural e fluxos autônomos.</div><div class="quick-stats"><div class="qs-label">Status</div><div class="stat-row"><span class="stat-name">🔧 Fase</span><span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span></div></div><div class="btn-disabled">🔒 Em Desenvolvimento</div></div>
+      <div class="app-card placeholder"><div class="card-header"><div class="card-icon-wrap">🗺️</div><span class="status-badge badge-soon">Em Breve</span></div><div class="card-name">Módulo 06</div><div class="card-tag" style="color:var(--text-muted)">Gestão Territorial</div><div class="card-desc">Mapeamento de regiões, rotas de visita e cobertura geográfica de produtores rurais.</div><div class="quick-stats"><div class="qs-label">Status</div><div class="stat-row"><span class="stat-name">🔧 Fase</span><span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span></div></div><div class="btn-disabled">🔒 Em Desenvolvimento</div></div>
+      <div class="app-card placeholder"><div class="card-header"><div class="card-icon-wrap">📦</div><span class="status-badge badge-soon">Em Breve</span></div><div class="card-name">Módulo 07</div><div class="card-tag" style="color:var(--text-muted)">Gestão de Produtos</div><div class="card-desc">Catálogo de insumos e gestão de estoque integrada ao ecossistema.</div><div class="quick-stats"><div class="qs-label">Status</div><div class="stat-row"><span class="stat-name">🔧 Fase</span><span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span></div></div><div class="btn-disabled">🔒 Em Desenvolvimento</div></div>
+      <div class="app-card placeholder"><div class="card-header"><div class="card-icon-wrap">🔐</div><span class="status-badge badge-soon">Em Breve</span></div><div class="card-name">Módulo 08</div><div class="card-tag" style="color:var(--text-muted)">Gestão de Acessos</div><div class="card-desc">Controle de permissões, papéis de usuários e auditoria de acessos por módulo.</div><div class="quick-stats"><div class="qs-label">Status</div><div class="stat-row"><span class="stat-name">🔧 Fase</span><span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span></div></div><div class="btn-disabled">🔒 Em Desenvolvimento</div></div>
+      <div class="app-card placeholder"><div class="card-header"><div class="card-icon-wrap">📡</div><span class="status-badge badge-soon">Em Breve</span></div><div class="card-name">Módulo 09</div><div class="card-tag" style="color:var(--text-muted)">API Gateway</div><div class="card-desc">Monitoramento de todas as APIs e serviços do ecossistema em tempo real.</div><div class="quick-stats"><div class="qs-label">Status</div><div class="stat-row"><span class="stat-name">🔧 Fase</span><span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span></div></div><div class="btn-disabled">🔒 Em Desenvolvimento</div></div>
+      <div class="app-card placeholder"><div class="card-header"><div class="card-icon-wrap">📬</div><span class="status-badge badge-soon">Em Breve</span></div><div class="card-name">Módulo 10</div><div class="card-tag" style="color:var(--text-muted)">Comunicação</div><div class="card-desc">Envio automatizado de relatórios e notificações para clientes e produtores.</div><div class="quick-stats"><div class="qs-label">Status</div><div class="stat-row"><span class="stat-name">🔧 Fase</span><span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span></div></div><div class="btn-disabled">🔒 Em Desenvolvimento</div></div>
+      <div class="app-card placeholder"><div class="card-header"><div class="card-icon-wrap">🔗</div><span class="status-badge badge-soon">Em Breve</span></div><div class="card-name">Módulo 11</div><div class="card-tag" style="color:var(--text-muted)">Integrações</div><div class="card-desc">Conectores com ERPs externos e sistemas legados do setor agroindustrial.</div><div class="quick-stats"><div class="qs-label">Status</div><div class="stat-row"><span class="stat-name">🔧 Fase</span><span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span></div></div><div class="btn-disabled">🔒 Em Desenvolvimento</div></div>
+      <div class="app-card placeholder"><div class="card-header"><div class="card-icon-wrap">🧪</div><span class="status-badge badge-soon">Em Breve</span></div><div class="card-name">Módulo 12</div><div class="card-tag" style="color:var(--text-muted)">Sandbox</div><div class="card-desc">Ambiente de testes e homologação para novos módulos antes da produção.</div><div class="quick-stats"><div class="qs-label">Status</div><div class="stat-row"><span class="stat-name">🔧 Fase</span><span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span></div></div><div class="btn-disabled">🔒 Em Desenvolvimento</div></div>
 
-      <!-- Módulo 04 -->
-      <div class="app-card placeholder">
-        <div class="card-header">
-          <div class="card-icon-wrap">📊</div>
-          <span class="status-badge badge-soon">Em Breve</span>
-        </div>
-        <div class="card-name">Módulo 04</div>
-        <div class="card-tag" style="color:var(--text-muted)">Dashboard Analytics</div>
-        <div class="card-desc">Painel analítico consolidado com métricas cruzadas de todos os módulos do ecossistema.</div>
-        <div class="quick-stats">
-          <div class="qs-label">Status</div>
-          <div class="stat-row">
-            <span class="stat-name">🔧 Fase</span>
-            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
-          </div>
-        </div>
-        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
-      </div>
-
-      <!-- Módulo 05 -->
-      <div class="app-card placeholder">
-        <div class="card-header">
-          <div class="card-icon-wrap">🤖</div>
-          <span class="status-badge badge-soon">Em Breve</span>
-        </div>
-        <div class="card-name">Módulo 05</div>
-        <div class="card-tag" style="color:var(--text-muted)">Automação & IA</div>
-        <div class="card-desc">Módulo de automação inteligente com processamento de linguagem natural e fluxos autônomos.</div>
-        <div class="quick-stats">
-          <div class="qs-label">Status</div>
-          <div class="stat-row">
-            <span class="stat-name">🔧 Fase</span>
-            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
-          </div>
-        </div>
-        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
-      </div>
-
-      <!-- Módulo 06 -->
-      <div class="app-card placeholder">
-        <div class="card-header">
-          <div class="card-icon-wrap">🗺️</div>
-          <span class="status-badge badge-soon">Em Breve</span>
-        </div>
-        <div class="card-name">Módulo 06</div>
-        <div class="card-tag" style="color:var(--text-muted)">Gestão Territorial</div>
-        <div class="card-desc">Mapeamento de regiões, rotas de visita e cobertura geográfica de produtores rurais.</div>
-        <div class="quick-stats">
-          <div class="qs-label">Status</div>
-          <div class="stat-row">
-            <span class="stat-name">🔧 Fase</span>
-            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
-          </div>
-        </div>
-        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
-      </div>
-
-      <!-- Módulo 07 -->
-      <div class="app-card placeholder">
-        <div class="card-header">
-          <div class="card-icon-wrap">📦</div>
-          <span class="status-badge badge-soon">Em Breve</span>
-        </div>
-        <div class="card-name">Módulo 07</div>
-        <div class="card-tag" style="color:var(--text-muted)">Gestão de Produtos</div>
-        <div class="card-desc">Catálogo de insumos, produtos agrícolas e gestão de estoque integrada ao ecossistema.</div>
-        <div class="quick-stats">
-          <div class="qs-label">Status</div>
-          <div class="stat-row">
-            <span class="stat-name">🔧 Fase</span>
-            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
-          </div>
-        </div>
-        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
-      </div>
-
-      <!-- Módulo 08 -->
-      <div class="app-card placeholder">
-        <div class="card-header">
-          <div class="card-icon-wrap">🔐</div>
-          <span class="status-badge badge-soon">Em Breve</span>
-        </div>
-        <div class="card-name">Módulo 08</div>
-        <div class="card-tag" style="color:var(--text-muted)">Gestão de Acessos</div>
-        <div class="card-desc">Controle de permissões, papéis de usuários e auditoria de acessos por módulo.</div>
-        <div class="quick-stats">
-          <div class="qs-label">Status</div>
-          <div class="stat-row">
-            <span class="stat-name">🔧 Fase</span>
-            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
-          </div>
-        </div>
-        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
-      </div>
-
-      <!-- Módulo 09 -->
-      <div class="app-card placeholder">
-        <div class="card-header">
-          <div class="card-icon-wrap">📡</div>
-          <span class="status-badge badge-soon">Em Breve</span>
-        </div>
-        <div class="card-name">Módulo 09</div>
-        <div class="card-tag" style="color:var(--text-muted)">API Gateway</div>
-        <div class="card-desc">Interface unificada para monitoramento de todas as APIs e serviços do ecossistema em tempo real.</div>
-        <div class="quick-stats">
-          <div class="qs-label">Status</div>
-          <div class="stat-row">
-            <span class="stat-name">🔧 Fase</span>
-            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
-          </div>
-        </div>
-        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
-      </div>
-
-      <!-- Módulo 10 -->
-      <div class="app-card placeholder">
-        <div class="card-header">
-          <div class="card-icon-wrap">📬</div>
-          <span class="status-badge badge-soon">Em Breve</span>
-        </div>
-        <div class="card-name">Módulo 10</div>
-        <div class="card-tag" style="color:var(--text-muted)">Comunicação</div>
-        <div class="card-desc">Envio automatizado de relatórios, notificações e documentos para clientes e produtores.</div>
-        <div class="quick-stats">
-          <div class="qs-label">Status</div>
-          <div class="stat-row">
-            <span class="stat-name">🔧 Fase</span>
-            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
-          </div>
-        </div>
-        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
-      </div>
-
-      <!-- Módulo 11 -->
-      <div class="app-card placeholder">
-        <div class="card-header">
-          <div class="card-icon-wrap">🔗</div>
-          <span class="status-badge badge-soon">Em Breve</span>
-        </div>
-        <div class="card-name">Módulo 11</div>
-        <div class="card-tag" style="color:var(--text-muted)">Integrações</div>
-        <div class="card-desc">Conectores com ERPs externos, bancos de dados parceiros e sistemas legados do setor agroindustrial.</div>
-        <div class="quick-stats">
-          <div class="qs-label">Status</div>
-          <div class="stat-row">
-            <span class="stat-name">🔧 Fase</span>
-            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
-          </div>
-        </div>
-        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
-      </div>
-
-      <!-- Módulo 12 -->
-      <div class="app-card placeholder">
-        <div class="card-header">
-          <div class="card-icon-wrap">🧪</div>
-          <span class="status-badge badge-soon">Em Breve</span>
-        </div>
-        <div class="card-name">Módulo 12</div>
-        <div class="card-tag" style="color:var(--text-muted)">Sandbox</div>
-        <div class="card-desc">Ambiente de testes e homologação para novos módulos antes de entrar em produção no ecossistema.</div>
-        <div class="quick-stats">
-          <div class="qs-label">Status</div>
-          <div class="stat-row">
-            <span class="stat-name">🔧 Fase</span>
-            <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Planejamento</span>
-          </div>
-        </div>
-        <div class="btn-disabled">🔒 Em Desenvolvimento</div>
-      </div>
-
-    </div><!-- /apps-grid -->
+    </div>
   </main>
 
-  <!-- ══ FOOTER ════════════════════════════════════════════════════ -->
   <footer class="site-footer">
     <div class="footer-left">
       <div class="brand-logo" style="width:28px;height:28px;font-size:11px;box-shadow:0 0 12px rgba(37,99,235,0.3)">NJK</div>
-      <span class="footer-text">NJK Dynamics · NEXUS v1.0</span>
+      <span class="footer-text">NJK Dynamics · NEXUS v1.1</span>
     </div>
-    <div class="footer-right">
-      Ecossistema Modular · Supabase · Render · Vercel<br>
-      <span id="footer-ts" style="font-size:10px;color:var(--text-muted);opacity:.6"></span>
-    </div>
+    <div class="footer-right">Ecossistema Modular · Supabase · Render · Vercel<br><span id="footer-ts" style="font-size:10px;color:var(--text-muted);opacity:.6"></span></div>
   </footer>
 
-  <!-- ══ TOAST CONTAINER ═══════════════════════════════════════════ -->
   <div class="toast-container" id="toast-container"></div>
 
-  <script src="../../src/pages/nexus.js"></script>
+  <script>
+    const CONFIG = {
+      password: 'NJK@2025',
+      apiDataware: 'https://njk-api.onrender.com',
+      apiAgroAta:  '',
+      apiFinalyze: '',
+      urlDataware: 'https://njkdynamics.vercel.app/dataware',
+      urlAgroAta:  '',
+      urlFinalyze: 'https://njkdynamics.vercel.app/finalyze',
+    };
+    const SESSION_KEY = 'njk_nexus_auth_v1';
+    function checkAuth() { if (sessionStorage.getItem(SESSION_KEY) === 'ok') { hideLogin(); initApp(); } }
+    function hideLogin() { document.getElementById('login-overlay').classList.add('hidden'); }
+    function doLogin() {
+      const pass = document.getElementById('login-pass').value;
+      const btn = document.getElementById('login-btn');
+      const content = document.getElementById('login-btn-content');
+      const error = document.getElementById('login-error');
+      if (!pass) return;
+      btn.disabled = true;
+      content.innerHTML = '<span class="spinner"></span> Verificando...';
+      error.classList.remove('show');
+      setTimeout(() => {
+        if (pass === CONFIG.password) {
+          sessionStorage.setItem(SESSION_KEY, 'ok'); hideLogin(); initApp();
+          showToast('success', 'Acesso concedido', 'Bem-vindo ao portal NJK Dynamics.');
+        } else {
+          error.classList.add('show');
+          document.getElementById('login-pass').value = '';
+          document.getElementById('login-pass').focus();
+          btn.disabled = false;
+          content.innerHTML = '🔓 Entrar no Portal';
+        }
+      }, 700);
+    }
+    function doLogout() { sessionStorage.removeItem(SESSION_KEY); window.location.reload(); }
+    document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('topbar-clock').textContent = now.toLocaleDateString('pt-BR') + '  ' + now.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    }
+    updateClock(); setInterval(updateClock, 1000);
+    function showToast(type, title, msg) {
+      const icons = { success:'✅', error:'❌', info:'ℹ️' };
+      const c = document.getElementById('toast-container');
+      const t = document.createElement('div');
+      t.className = 'toast ' + type;
+      t.innerHTML = '<span class="toast-icon">' + icons[type] + '</span><div><div class="toast-title">' + title + '</div><div class="toast-msg">' + msg + '</div></div>';
+      c.appendChild(t);
+      setTimeout(() => { t.classList.add('fade-out'); setTimeout(() => t.remove(), 320); }, 3800);
+    }
+    function setMetric(id, value) { const el = document.getElementById(id); if (!el) return; el.textContent = value; el.classList.remove('loading'); }
+    function setMetricError(id) { const el = document.getElementById(id); if (!el) return; el.textContent = '--'; el.classList.remove('loading'); el.style.opacity = '0.35'; }
+    function setModuleStatus(moduleId, online) {
+      const pill = document.getElementById('status-' + moduleId);
+      if (!pill) return;
+      pill.className = online ? 'status-badge badge-live' : 'status-badge badge-offline';
+      pill.textContent = online ? '● Live' : '● Offline';
+    }
+    async function checkApiHealth() {
+      const pill = document.getElementById('api-status-pill');
+      const label = document.getElementById('api-status-text');
+      const heroSt = document.getElementById('hero-api-status');
+      try {
+        const r = await fetch(CONFIG.apiDataware + '/health', { signal: AbortSignal.timeout(15000) });
+        if (r.ok) {
+          pill.style.cssText = 'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:var(--accent-emerald)';
+          pill.querySelector('.status-dot').style.background = 'var(--accent-emerald)';
+          label.textContent = 'API Online'; if (heroSt) heroSt.textContent = 'Online';
+          setModuleStatus('dataware', true);
+        } else throw new Error();
+      } catch {
+        pill.style.cssText = 'background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25);color:var(--accent-rose)';
+        pill.querySelector('.status-dot').style.background = 'var(--accent-rose)';
+        label.textContent = 'API Offline'; if (heroSt) heroSt.textContent = 'Offline';
+        setModuleStatus('dataware', false);
+      }
+    }
+    async function loadDatawareMetrics() {
+      try {
+        const [rA, rI, rS] = await Promise.all([
+          fetch(CONFIG.apiDataware + '/api/clientes?status=ativo&limite=9999', { signal: AbortSignal.timeout(15000) }),
+          fetch(CONFIG.apiDataware + '/api/clientes?status=inativo&limite=9999', { signal: AbortSignal.timeout(15000) }),
+          fetch(CONFIG.apiDataware + '/api/clientes?status=suspenso&limite=9999', { signal: AbortSignal.timeout(15000) }),
+        ]);
+        let ativos = 0, inativos = 0, suspensos = 0;
+        if (rA.ok) { const d = await rA.json(); ativos = d.total ?? (d.clientes||[]).length; }
+        if (rI.ok) { const d = await rI.json(); inativos = d.total ?? (d.clientes||[]).length; }
+        if (rS.ok) { const d = await rS.json(); suspensos = d.total ?? (d.clientes||[]).length; }
+        const total = ativos + inativos + suspensos;
+        setMetric('dw-total', total); setMetric('dw-ativos', ativos);
+        setMetric('dw-outros', inativos + suspensos); setMetric('hero-clientes', total);
+      } catch { ['dw-total','dw-ativos','dw-outros'].forEach(setMetricError); }
+    }
+    async function loadAgroAtaMetrics() {
+      if (!CONFIG.apiAgroAta) { ['aa-atas','aa-produtores','aa-mes'].forEach(setMetricError); setModuleStatus('agroata', false); return; }
+      try {
+        const r = await fetch(CONFIG.apiAgroAta + '/api/atas/stats', { signal: AbortSignal.timeout(15000) });
+        if (!r.ok) throw new Error();
+        const d = await r.json();
+        setMetric('aa-atas', d.total ?? '--'); setMetric('aa-produtores', d.produtores ?? '--'); setMetric('aa-mes', d.mes ?? '--');
+        setModuleStatus('agroata', true);
+      } catch { ['aa-atas','aa-produtores','aa-mes'].forEach(setMetricError); setModuleStatus('agroata', false); }
+    }
+    async function loadFinalyzeMetrics() {
+      if (!CONFIG.apiFinalyze) { ['fin-contratos','fin-pdfs','fin-relatorios'].forEach(setMetricError); setModuleStatus('finalyze', false); return; }
+      try {
+        const r = await fetch(CONFIG.apiFinalyze + '/api/contratos/stats', { signal: AbortSignal.timeout(15000) });
+        if (!r.ok) throw new Error();
+        const d = await r.json();
+        setMetric('fin-contratos', d.contratos ?? '--'); setMetric('fin-pdfs', d.pdfs ?? '--'); setMetric('fin-relatorios', d.relatorios ?? '--');
+        setModuleStatus('finalyze', true);
+      } catch { ['fin-contratos','fin-pdfs','fin-relatorios'].forEach(setMetricError); setModuleStatus('finalyze', false); }
+    }
+    function setupButtons() {
+      const btnAgroAta = document.getElementById('btn-agroata');
+      if (!CONFIG.urlAgroAta) {
+        btnAgroAta.style.opacity = '0.5'; btnAgroAta.style.cursor = 'not-allowed';
+        btnAgroAta.onclick = e => { e.preventDefault(); showToast('info', 'AgroAta', 'Backend em configuração. Em breve disponível.'); };
+      } else { btnAgroAta.href = CONFIG.urlAgroAta; }
+    }
+    function updateFooterTs() {
+      const el = document.getElementById('footer-ts');
+      if (el) el.textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    }
+    function initApp() {
+      setupButtons(); checkApiHealth(); loadDatawareMetrics(); loadAgroAtaMetrics(); loadFinalyzeMetrics(); updateFooterTs();
+      setInterval(checkApiHealth, 30000);
+      setInterval(() => { loadDatawareMetrics(); loadAgroAtaMetrics(); loadFinalyzeMetrics(); updateFooterTs(); }, 60000);
+    }
+    checkAuth();
+  </script>
 </body>
 </html>
