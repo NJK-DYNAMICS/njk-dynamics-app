@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "cleanUrls": true,
   "rewrites": [
     { "source": "/", "destination": "/apps/nexus/index.html" },
     { "source": "/dataware", "destination": "/apps/dataware/index.html" },
