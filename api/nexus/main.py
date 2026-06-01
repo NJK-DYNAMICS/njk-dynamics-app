@@ -90,8 +90,13 @@ class ClienteStatusUpdate(BaseModel):
 
 async def count_clientes(status: str) -> int:
     try:
-        result = supabase.table("dim_clientes").select("id", count="exact").eq("status", status).execute()
-        return result.count or 0
+        result = (
+            supabase.table("dim_clientes")
+            .select("id")
+            .eq("status", status)
+            .execute()
+        )
+        return len(result.data)
     except Exception:
         return -1
 
