@@ -135,7 +135,7 @@ async def criar_cliente(payload: ClienteCreate):
 @app.get("/api/clientes", tags=["Clientes"])
 async def listar_clientes(
     status: Optional[str] = Query(None),
-    limite: int = Query(100, ge=1, le=9999),,
+    limite: int = Query(100, ge=1, le=9999),
     pagina: int = Query(1, ge=1),
 ):
     try:
