@@ -1,5 +1,5 @@
 # NJK Dynamics — Ecossistema
-
+ 
 Monorepo vanilla (HTML/CSS/JS) + API Python (FastAPI).
 
 ## Estrutura
