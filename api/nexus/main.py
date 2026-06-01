@@ -190,10 +190,25 @@ async def excluir_cliente(cliente_id: int):
 
 @app.get("/api/stats/dataware", tags=["Stats"])
 async def stats_dataware():
-    ativos, inativos, suspensos = await asyncio.gather(count_clientes("ativo"), count_clientes("inativo"), count_clientes("suspenso"))
-    erro = any(v == -1 for v in [ativos, inativos, suspensos])
-    total = max(ativos, 0) + max(inativos, 0) + max(suspensos, 0)
-    return {"sucesso": not erro, "total": total, "ativos": ativos, "inativos": inativos, "suspensos": suspensos, "outros": max(inativos, 0) + max(suspensos, 0), "timestamp": datetime.utcnow().isoformat() + "Z"}
+    try:
+        rA = supabase.table("dim_clientes").select("id").eq("status", "ativo").execute()
+        rI = supabase.table("dim_clientes").select("id").eq("status", "inativo").execute()
+        rS = supabase.table("dim_clientes").select("id").eq("status", "suspenso").execute()
+        ativos    = len(rA.data) if rA.data else 0
+        inativos  = len(rI.data) if rI.data else 0
+        suspensos = len(rS.data) if rS.data else 0
+        total = ativos + inativos + suspensos
+        return {
+            "sucesso": True,
+            "total": total,
+            "ativos": ativos,
+            "inativos": inativos,
+            "suspensos": suspensos,
+            "outros": inativos + suspensos,
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+        }
+    except Exception as e:
+        return {"sucesso": False, "total": 0, "ativos": 0, "inativos": 0, "suspensos": 0, "outros": 0}
 
 @app.get("/api/stats/agroata", tags=["Stats"])
 async def stats_agroata():
