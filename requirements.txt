@@ -4,3 +4,10 @@ httpx
 supabase
 python-dotenv
 python-multipart
+# PDF reading (OCR)
+pdfplumber
+anthropic
+# Excel generation
+openpyxl
+# PDF generation
+reportlab
