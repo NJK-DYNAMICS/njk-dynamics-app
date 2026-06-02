@@ -1,117 +1,800 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Finalyze — NJK Dynamics | Contratos de Financiamento</title>
-  <meta name="description" content="Análise de contratos de financiamento com extração via IA e cronograma de amortização." />
+  <title>Finalyze — NJK Dynamics | Auditoria de Contratos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../../src/styles/tokens.css" />
-  <link rel="stylesheet" href="../../src/styles/finalyze.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+:root {
+  --bg:#07080f;--bg2:#0d0f1a;--bg3:#121520;--bg4:#181c2e;
+  --border:#1f2438;--border2:#2a3050;
+  --amber:#f59e0b;--amber2:#fbbf24;--amber-dim:rgba(245,158,11,0.12);--amber-glow:rgba(245,158,11,0.25);
+  --blue:#3b82f6;--blue-dim:rgba(59,130,246,0.1);
+  --emerald:#10b981;--emerald-dim:rgba(16,185,129,0.1);
+  --rose:#f43f5e;--rose-dim:rgba(244,63,94,0.1);
+  --cyan:#06b6d4;--purple:#8b5cf6;
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#475569;
+  --font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;
+  --r:8px;--r2:14px;--r3:20px;
+  --tr:all 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 80% 10%,rgba(245,158,11,0.06) 0%,transparent 50%),radial-gradient(ellipse at 10% 80%,rgba(59,130,246,0.05) 0%,transparent 50%);pointer-events:none;z-index:0}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(7,8,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:32px;height:32px;background:linear-gradient(135deg,#f59e0b,#f97316);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:13px;font-weight:800;color:#000;box-shadow:0 0 20px rgba(245,158,11,0.4)}
+.brand-name{font-family:var(--font-head);font-size:16px;font-weight:700;letter-spacing:-0.3px}
+.brand-module{font-family:var(--font-mono);font-size:10px;color:var(--amber);letter-spacing:0.15em;padding:2px 8px;background:var(--amber-dim);border:1px solid var(--amber-glow);border-radius:100px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.btn-nexus{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--blue-dim);border:1px solid rgba(59,130,246,0.28);border-radius:var(--r);font-family:var(--font-mono);font-size:11px;font-weight:500;color:var(--blue);cursor:pointer;text-decoration:none;transition:var(--tr)}
+.btn-nexus:hover{background:rgba(59,130,246,0.18);border-color:rgba(59,130,246,0.5)}
+.topbar-clock{font-family:var(--font-mono);font-size:11px;color:var(--text3)}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh;padding-top:60px}
+
+/* SIDEBAR */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+.sidebar-section{font-family:var(--font-mono);font-size:9px;font-weight:500;letter-spacing:0.16em;color:var(--text3);text-transform:uppercase;padding:16px 20px 6px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:var(--tr);border-left:2px solid transparent;text-decoration:none}
+.sidebar-item:hover{color:var(--text);background:rgba(255,255,255,0.03)}
+.sidebar-item.active{color:var(--amber);background:var(--amber-dim);border-left-color:var(--amber)}
+.sidebar-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sidebar-badge{margin-left:auto;font-family:var(--font-mono);font-size:9px;font-weight:600;padding:2px 7px;border-radius:100px;background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-glow)}
+
+/* MAIN */
+.main{padding:40px;position:relative;z-index:1;min-height:calc(100vh - 60px)}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:40px}
+.page-tag{font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:0.18em;color:var(--amber);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.page-tag::before{content:'';width:24px;height:1px;background:var(--amber)}
+.page-title{font-family:var(--font-head);font-size:30px;font-weight:800;letter-spacing:-0.8px;line-height:1.1;margin-bottom:8px}
+.page-subtitle{font-size:14px;color:var(--text2);line-height:1.6}
+
+/* STEPS */
+.steps{display:flex;align-items:center;gap:0;margin-bottom:40px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:4px;width:fit-content}
+.step{display:flex;align-items:center;gap:8px;padding:8px 20px;border-radius:var(--r);font-size:12px;font-weight:600;color:var(--text3);transition:var(--tr);cursor:default;font-family:var(--font-mono)}
+.step.active{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-glow)}
+.step.done{color:var(--emerald)}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.step.active .step-num{background:var(--amber);color:#000}
+.step.done .step-num{background:var(--emerald);color:#000}
+.step-sep{width:20px;height:1px;background:var(--border2);flex-shrink:0}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:24px}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
+.card-title-group{display:flex;align-items:center;gap:12px}
+.card-icon{width:40px;height:40px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.card-icon.amber{background:var(--amber-dim);border:1px solid var(--amber-glow)}
+.card-icon.blue{background:var(--blue-dim);border:1px solid rgba(59,130,246,0.25)}
+.card-icon.emerald{background:var(--emerald-dim);border:1px solid rgba(16,185,129,0.25)}
+.card-title{font-family:var(--font-head);font-size:15px;font-weight:700;letter-spacing:-0.2px}
+.card-sub{font-size:11px;color:var(--text3);font-family:var(--font-mono);margin-top:2px}
+.card-body{padding:24px}
+
+/* CLIENTE SELECTOR */
+.client-selector{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
+.form-group{display:flex;flex-direction:column;gap:7px}
+.form-label{font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text2)}
+.form-select,.form-input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:11px 14px;font-family:var(--font-body);font-size:14px;color:var(--text);outline:none;transition:var(--tr);width:100%}
+.form-select:focus,.form-input:focus{border-color:var(--amber);box-shadow:0 0 0 3px var(--amber-dim)}
+.form-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;background-color:var(--bg3)}
+.form-select option{background:var(--bg3)}
+.form-input::placeholder{color:var(--text3)}
+.client-info{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:16px;display:none;margin-top:12px}
+.client-info.show{display:flex;gap:24px;flex-wrap:wrap}
+.client-info-item{display:flex;flex-direction:column;gap:3px}
+.client-info-label{font-family:var(--font-mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em}
+.client-info-value{font-size:13px;font-weight:600;color:var(--amber)}
+
+/* MODO DE ENTRADA */
+.input-mode{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.mode-card{background:var(--bg3);border:2px solid var(--border2);border-radius:var(--r2);padding:20px;cursor:pointer;transition:var(--tr);text-align:center}
+.mode-card:hover{border-color:var(--border2);background:var(--bg4)}
+.mode-card.selected{border-color:var(--amber);background:var(--amber-dim)}
+.mode-icon{font-size:32px;margin-bottom:10px}
+.mode-title{font-family:var(--font-head);font-size:14px;font-weight:700;margin-bottom:4px}
+.mode-desc{font-size:12px;color:var(--text2)}
+.mode-card.selected .mode-desc{color:var(--amber2)}
+
+/* UPLOAD AREA */
+.upload-area{border:2px dashed var(--border2);border-radius:var(--r2);padding:48px 24px;text-align:center;transition:var(--tr);cursor:pointer;position:relative}
+.upload-area:hover,.upload-area.drag{border-color:var(--amber);background:var(--amber-dim)}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:40px;margin-bottom:12px;opacity:0.5}
+.upload-title{font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:6px}
+.upload-desc{font-size:12px;color:var(--text2)}
+.upload-file-info{display:none;align-items:center;gap:12px;background:var(--emerald-dim);border:1px solid rgba(16,185,129,0.25);border-radius:var(--r);padding:12px 16px;margin-top:16px}
+.upload-file-info.show{display:flex}
+.upload-file-name{font-family:var(--font-mono);font-size:12px;color:var(--emerald)}
+
+/* FORM GRID */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.form-grid.full{grid-template-columns:1fr}
+.form-divider{height:1px;background:var(--border);margin:8px 0}
+.form-section-label{font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);margin:16px 0 8px;grid-column:1/-1}
+
+/* AMORTIZATION SYSTEM */
+.amort-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.amort-tab{padding:8px 16px;border:1px solid var(--border2);border-radius:var(--r);font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:var(--tr);background:transparent}
+.amort-tab:hover{border-color:var(--amber-glow);color:var(--amber)}
+.amort-tab.active{background:var(--amber-dim);border-color:var(--amber);color:var(--amber)}
+
+/* CORRECTION TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--border)}
+.toggle-label{font-size:13px;font-weight:500}
+.toggle-desc{font-size:11px;color:var(--text3);margin-top:2px}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--bg4);border:1px solid var(--border2);border-radius:100px;cursor:pointer;transition:var(--tr)}
+.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:var(--text3);border-radius:50%;transition:var(--tr)}
+.toggle input:checked + .toggle-slider{background:var(--amber-dim);border-color:var(--amber)}
+.toggle input:checked + .toggle-slider::before{transform:translateX(20px);background:var(--amber)}
+.index-select{display:none;margin-top:12px}
+.index-select.show{display:block}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:20px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.amber::before{background:var(--amber)}
+.kpi.blue::before{background:var(--blue)}
+.kpi.emerald::before{background:var(--emerald)}
+.kpi-label{font-family:var(--font-mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+.kpi-value{font-family:var(--font-head);font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}
+.kpi.amber .kpi-value{color:var(--amber)}
+.kpi.blue .kpi-value{color:var(--blue)}
+.kpi.emerald .kpi-value{color:var(--emerald)}
+.kpi-sub{font-size:11px;color:var(--text3)}
+
+/* TABELA AMORTIZAÇÃO */
+.table-wrap{overflow-x:auto;border-radius:var(--r)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{padding:10px 14px;text-align:right;font-family:var(--font-mono);font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap;background:rgba(0,0,0,0.2)}
+thead th:first-child{text-align:center}
+thead th:nth-child(2){text-align:left}
+tbody tr{border-bottom:1px solid rgba(31,36,56,0.8);transition:var(--tr)}
+tbody tr:hover{background:rgba(245,158,11,0.03)}
+tbody tr.future{background:rgba(245,158,11,0.02)}
+tbody tr.future td{color:var(--amber2)}
+tbody tr:last-child{border-bottom:none;font-weight:600}
+td{padding:10px 14px;text-align:right;font-family:var(--font-mono);font-size:12px}
+td:first-child{text-align:center;color:var(--text3)}
+td:nth-child(2){text-align:left;font-family:var(--font-body);font-weight:500}
+.badge-liquidada{background:var(--emerald-dim);color:var(--emerald);border:1px solid rgba(16,185,129,0.2);padding:2px 8px;border-radius:100px;font-size:10px;font-family:var(--font-mono)}
+.badge-aberta{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-glow);padding:2px 8px;border-radius:100px;font-size:10px;font-family:var(--font-mono)}
+.badge-vencida{background:var(--rose-dim);color:var(--rose);border:1px solid rgba(244,63,94,0.2);padding:2px 8px;border-radius:100px;font-size:10px;font-family:var(--font-mono)}
+
+/* BOTÕES */
+.btn-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn{padding:12px 24px;border-radius:var(--r);font-family:var(--font-head);font-size:14px;font-weight:700;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:8px;border:none;letter-spacing:0.01em}
+.btn-primary{background:linear-gradient(135deg,var(--amber),#f97316);color:#000}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(245,158,11,0.35)}
+.btn-secondary{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.btn-secondary:hover{border-color:var(--amber-glow);color:var(--amber);background:var(--amber-dim)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text3)}
+.btn-ghost:hover{border-color:var(--border2);color:var(--text2)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn-excel{background:var(--emerald-dim);border:1px solid rgba(16,185,129,0.3);color:var(--emerald)}
+.btn-excel:hover{background:rgba(16,185,129,0.2)}
+.btn-pdf{background:var(--rose-dim);border:1px solid rgba(244,63,94,0.3);color:var(--rose)}
+.btn-pdf:hover{background:rgba(244,63,94,0.2)}
+
+/* TOAST */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{pointer-events:auto;display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border-radius:var(--r2);background:var(--bg3);border:1px solid var(--border2);box-shadow:0 8px 32px rgba(0,0,0,0.6);min-width:280px;max-width:380px;animation:toast-in .3s cubic-bezier(.4,0,.2,1)}
+.toast.fade-out{animation:toast-out .25s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes toast-in{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toast-out{from{opacity:1}to{opacity:0;transform:translateX(16px)}}
+.toast-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.toast-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.toast-msg{font-size:12px;color:var(--text2)}
+.toast.success{border-left:3px solid var(--emerald)}.toast.error{border-left:3px solid var(--rose)}.toast.info{border-left:3px solid var(--amber)}
+
+/* SPINNER */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,0,0,0.2);border-top-color:#000;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* EMPTY STATE */
+.empty-table{padding:60px 24px;text-align:center}
+.empty-table-icon{font-size:48px;margin-bottom:16px;opacity:0.25}
+.empty-table-title{font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--text2);margin-bottom:6px}
+.empty-table-desc{font-size:13px;color:var(--text3)}
+
+/* SECTION HIDDEN */
+.section{display:none}.section.show{display:block}
+.section-animated{animation:section-in .3s cubic-bezier(.4,0,.2,1)}
+@keyframes section-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main{padding:24px}.form-grid.cols-3{grid-template-columns:1fr 1fr}.kpi-grid{grid-template-columns:1fr}}
+@media(max-width:640px){.form-grid,.form-grid.cols-3,.input-mode,.kpi-grid{grid-template-columns:1fr}.steps{display:none}}
+  </style>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="topbar-brand">
-        <div class="brand-logo">NJK</div>
-        <div>
-          <div class="brand-name">NJK Dynamics</div>
-          <div class="brand-sub">FINALYZE · Financiamentos</div>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="brand">
+      <div class="brand-mark">F</div>
+      <div>
+        <div class="brand-name">Finalyze</div>
+      </div>
+    </div>
+    <div class="brand-module">AUDITORIA DE CONTRATOS</div>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-clock" id="topbar-clock"></div>
+    <a class="btn-nexus" href="https://njkdynamics.vercel.app">← NEXUS</a>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">Módulo</div>
+    <a class="sidebar-item active" href="#" onclick="return false">
+      <span class="sidebar-icon">📑</span><span>Novo Contrato</span>
+    </a>
+    <a class="sidebar-item" href="#" onclick="return false" style="opacity:.4;cursor:not-allowed">
+      <span class="sidebar-icon">📂</span><span>Histórico</span>
+      <span class="sidebar-badge">Em breve</span>
+    </a>
+    <div class="sidebar-section">Exportar</div>
+    <a class="sidebar-item" href="#" onclick="exportExcel()" id="sidebar-excel" style="opacity:.4;pointer-events:none">
+      <span class="sidebar-icon">📊</span><span>Gerar Excel</span>
+    </a>
+    <a class="sidebar-item" href="#" onclick="exportPDF()" id="sidebar-pdf" style="opacity:.4;pointer-events:none">
+      <span class="sidebar-icon">📄</span><span>Gerar PDF</span>
+    </a>
+    <div class="sidebar-section">Sistema</div>
+    <a class="sidebar-item" href="https://njkdynamics.vercel.app/dataware" target="_blank">
+      <span class="sidebar-icon">🗄️</span><span>Dataware</span>
+    </a>
+    <a class="sidebar-item" href="https://njkdynamics.vercel.app">
+      <span class="sidebar-icon">🏠</span><span>Voltar ao NEXUS</span>
+    </a>
+  </nav>
+
+  <main class="main">
+    <div class="page-header">
+      <div class="page-tag">Finalyze · NJK Dynamics</div>
+      <h1 class="page-title">Auditoria de Contratos</h1>
+      <p class="page-subtitle">Análise financeira de financiamentos bancários com geração de planilha e relatório PDF.</p>
+    </div>
+
+    <!-- STEPS -->
+    <div class="steps">
+      <div class="step active" id="step-1"><div class="step-num">1</div>Cliente</div>
+      <div class="step-sep"></div>
+      <div class="step" id="step-2"><div class="step-num">2</div>Contrato</div>
+      <div class="step-sep"></div>
+      <div class="step" id="step-3"><div class="step-num">3</div>Amortização</div>
+      <div class="step-sep"></div>
+      <div class="step" id="step-4"><div class="step-num">4</div>Relatório</div>
+    </div>
+
+    <!-- STEP 1: CLIENTE -->
+    <div class="section show section-animated" id="sec-cliente">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon amber">👤</div>
+            <div><div class="card-title">Seleção de Cliente</div><div class="card-sub">Dataware · dim_clientes</div></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="client-selector">
+            <div class="form-group" style="flex:1">
+              <label class="form-label">Cliente / Tomador</label>
+              <select class="form-select" id="select-cliente" onchange="onClienteChange()">
+                <option value="">— Carregando clientes... —</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="goToStep2()" id="btn-step2" disabled>
+              Próximo →
+            </button>
+          </div>
+          <div class="client-info" id="client-info">
+            <div class="client-info-item"><div class="client-info-label">ID</div><div class="client-info-value" id="ci-id">—</div></div>
+            <div class="client-info-item"><div class="client-info-label">Status</div><div class="client-info-value" id="ci-status">—</div></div>
+            <div class="client-info-item"><div class="client-info-label">Cadastrado em</div><div class="client-info-value" id="ci-data">—</div></div>
+          </div>
         </div>
       </div>
-      <div class="topbar-badge">Âmbar</div>
-    </header>
+    </div>
 
-    <main class="main">
-      <section class="hero">
-        <h1 class="hero-title">Análise de <span class="gradient-text">Contratos</span></h1>
-        <p class="hero-desc">Envie o PDF do contrato de financiamento. Extraímos os dados cadastrais e geramos o cronograma de amortização.</p>
-        <button type="button" class="link-config hidden" id="showApiKeyBtn">Alterar chave de API</button>
-      </section>
-
-      <section class="panel panel-config" id="configSection">
-        <div class="panel-head">
-          <h2>Configuração</h2>
-        </div>
-        <div class="config-row">
-          <label for="apiKeyInput">Chave da API (Google AI Studio)</label>
-          <div class="config-inputs">
-            <input type="password" id="apiKeyInput" placeholder="Cole sua API Key" autocomplete="off" />
-            <button type="button" class="btn btn-secondary" id="saveApiKeyBtn">Salvar</button>
+    <!-- STEP 2: CONTRATO -->
+    <div class="section section-animated" id="sec-contrato">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon amber">📄</div>
+            <div><div class="card-title">Dados do Contrato</div><div class="card-sub">Upload PDF ou entrada manual</div></div>
           </div>
-          <p class="helper-text">A chave fica apenas no seu navegador (localStorage).</p>
+          <button class="btn btn-ghost" onclick="goToStep1()" style="font-size:12px;padding:8px 14px">← Voltar</button>
         </div>
-      </section>
+        <div class="card-body">
 
-      <section class="panel panel-upload" id="uploadSection">
-        <div id="dropZone" class="drop-zone" role="button" tabindex="0" aria-label="Enviar PDF do contrato">
-          <div class="drop-zone-glow"></div>
-          <div class="upload-icon" aria-hidden="true">📄</div>
-          <h3>Contrato de financiamento (PDF)</h3>
-          <p>Arraste o arquivo aqui ou clique para selecionar</p>
-          <input type="file" id="fileInput" accept="application/pdf" hidden />
-        </div>
-      </section>
+          <!-- MODO -->
+          <div class="input-mode">
+            <div class="mode-card selected" id="mode-upload" onclick="setMode('upload')">
+              <div class="mode-icon">📤</div>
+              <div class="mode-title">Upload PDF</div>
+              <div class="mode-desc">Extraia dados automaticamente via OCR</div>
+            </div>
+            <div class="mode-card" id="mode-manual" onclick="setMode('manual')">
+              <div class="mode-icon">✏️</div>
+              <div class="mode-title">Entrada Manual</div>
+              <div class="mode-desc">Digite os dados do contrato</div>
+            </div>
+          </div>
 
-      <section class="panel panel-processing hidden" id="processingSection">
-        <div class="spinner" aria-hidden="true"></div>
-        <p id="processingText" class="processing-text">Lendo documento...</p>
-      </section>
+          <!-- UPLOAD -->
+          <div id="area-upload">
+            <div class="upload-area" id="upload-area">
+              <input type="file" accept=".pdf" onchange="onFileSelect(event)" />
+              <div class="upload-icon">📂</div>
+              <div class="upload-title">Arraste o PDF aqui ou clique para selecionar</div>
+              <div class="upload-desc">Cédulas de crédito, CCB, contratos bancários · PDF com texto selecionável</div>
+            </div>
+            <div class="upload-file-info" id="upload-file-info">
+              <span style="font-size:20px">📄</span>
+              <div>
+                <div class="upload-file-name" id="upload-file-name">arquivo.pdf</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px">Pronto para extração OCR</div>
+              </div>
+              <button class="btn btn-ghost" onclick="processOCR()" style="margin-left:auto;font-size:12px;padding:8px 14px" id="btn-ocr">
+                🔍 Extrair Dados
+              </button>
+            </div>
+          </div>
 
-      <section class="panel panel-results hidden" id="resultsSection">
-        <div class="results-toolbar">
-          <h2>Relatório do contrato</h2>
-          <div class="toolbar-actions">
-            <button type="button" class="btn btn-ghost" id="newUploadBtn">Novo PDF</button>
-            <button type="button" class="btn btn-primary" id="downloadBtn">Exportar Excel</button>
+          <!-- FORM -->
+          <div id="area-form" style="margin-top:20px">
+            <div class="form-grid">
+              <div class="form-section-label">Identificação do Contrato</div>
+              <div class="form-group">
+                <label class="form-label">Número do Contrato</label>
+                <input class="form-input" type="text" id="f-numero" placeholder="Ex: 0012345-67/2024" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Agente Financeiro</label>
+                <input class="form-input" type="text" id="f-agente" placeholder="Ex: Banco do Brasil S.A." />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Linha de Crédito</label>
+                <input class="form-input" type="text" id="f-linha" placeholder="Ex: PRONAF, MODERFROTA..." />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Data de Emissão</label>
+                <input class="form-input" type="date" id="f-emissao" />
+              </div>
+              <div class="form-section-label">Condições Financeiras</div>
+              <div class="form-group">
+                <label class="form-label">Valor do Financiamento (R$)</label>
+                <input class="form-input" type="text" id="f-valor" placeholder="Ex: 500.000,00" oninput="maskMoney(this)" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Taxa de Juros (% a.a.)</label>
+                <input class="form-input" type="number" id="f-taxa" placeholder="Ex: 7.5" step="0.01" min="0" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nº de Parcelas</label>
+                <input class="form-input" type="number" id="f-parcelas" placeholder="Ex: 60" min="1" max="360" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Data da 1ª Parcela</label>
+                <input class="form-input" type="date" id="f-primeira" />
+              </div>
+              <div class="form-section-label">Sistema de Amortização</div>
+            </div>
+            <div class="amort-tabs" id="amort-tabs">
+              <div class="amort-tab active" onclick="setAmort('SAC')">SAC</div>
+              <div class="amort-tab" onclick="setAmort('PRICE')">PRICE</div>
+              <div class="amort-tab" onclick="setAmort('CUSTOM')">Personalizado</div>
+            </div>
+            <div id="amort-custom-area" style="display:none;margin-top:12px">
+              <div class="form-group">
+                <label class="form-label">Fórmula Personalizada</label>
+                <input class="form-input" type="text" id="f-formula" placeholder="Ex: PMT(taxa/12, n, -PV)" style="font-family:var(--font-mono)" />
+              </div>
+            </div>
+
+            <!-- CORREÇÃO -->
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Corrigir parcelas em aberto</div>
+                <div class="toggle-desc">Atualiza parcelas futuras e vencidas até a data atual</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-correcao" onchange="onToggleCorrecao()" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="index-select" id="index-select">
+              <div class="form-group">
+                <label class="form-label">Índice de Correção</label>
+                <select class="form-select" id="f-indice">
+                  <option value="contratual">Taxa Contratual</option>
+                  <option value="ipca">IPCA</option>
+                  <option value="igpm">IGP-M</option>
+                  <option value="selic">SELIC</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:24px">
+            <button class="btn btn-primary" onclick="calcular()">
+              <span id="btn-calc-content">⚡ Calcular Amortização</span>
+            </button>
+            <button class="btn btn-ghost" onclick="limparForm()">Limpar</button>
           </div>
         </div>
+      </div>
+    </div>
 
-        <article class="contract-header" id="contractHeader">
-          <div class="contract-header-title">
-            <span class="contract-label">Resumo do financiamento</span>
-            <span class="contract-id" id="hdrContrato">—</span>
+    <!-- STEP 3 + 4: RESULTADO -->
+    <div class="section section-animated" id="sec-resultado">
+      <div class="btn-row" style="margin-bottom:24px">
+        <button class="btn btn-ghost" onclick="goToStep2()" style="font-size:12px;padding:8px 14px">← Editar Contrato</button>
+        <button class="btn btn-excel" onclick="exportExcel()" id="btn-excel">📊 Exportar Excel</button>
+        <button class="btn btn-pdf" onclick="exportPDF()" id="btn-pdf">📄 Gerar PDF</button>
+        <button class="btn btn-secondary" onclick="salvarSupabase()" id="btn-salvar">💾 Salvar Registro</button>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi amber">
+          <div class="kpi-label">Saldo Devedor Atual</div>
+          <div class="kpi-value" id="kpi-saldo">R$ —</div>
+          <div class="kpi-sub" id="kpi-saldo-sub">—</div>
+        </div>
+        <div class="kpi blue">
+          <div class="kpi-label">Total de Juros</div>
+          <div class="kpi-value" id="kpi-juros">R$ —</div>
+          <div class="kpi-sub" id="kpi-juros-sub">—</div>
+        </div>
+        <div class="kpi emerald">
+          <div class="kpi-label">Custo Efetivo Total</div>
+          <div class="kpi-value" id="kpi-cet">— %</div>
+          <div class="kpi-sub" id="kpi-cet-sub">ao ano</div>
+        </div>
+      </div>
+
+      <!-- TABELA -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon amber">📋</div>
+            <div>
+              <div class="card-title">Tabela de Amortização</div>
+              <div class="card-sub" id="table-info-sub">— parcelas · sistema —</div>
+            </div>
           </div>
-          <div class="meta-grid" id="metaGrid"></div>
-        </article>
-
+          <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--text3)">
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--emerald)"></span>Liquidada
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--amber)"></span>Em aberto
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--rose)"></span>Vencida
+          </div>
+        </div>
         <div class="table-wrap">
-          <div class="table-head">
-            <h3>Cronograma de amortização</h3>
-            <span class="table-meta" id="tableMeta"></span>
-          </div>
-          <div class="table-scroll">
-            <table class="amort-table" id="amortTable">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Saldo devedor</th>
-                  <th>Vencimento</th>
-                  <th>Amortização</th>
-                  <th>Juros</th>
-                  <th>Total pago</th>
-                </tr>
-              </thead>
-              <tbody id="amortTableBody"></tbody>
-              <tfoot id="amortTableFoot"></tfoot>
-            </table>
-          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="text-align:center">#</th>
+                <th style="text-align:left">Vencimento</th>
+                <th>Principal</th>
+                <th>Juros</th>
+                <th>Prestação</th>
+                <th>Saldo Devedor</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="amort-tbody">
+              <tr><td colspan="7">
+                <div class="empty-table">
+                  <div class="empty-table-icon">📊</div>
+                  <div class="empty-table-title">Nenhum cálculo realizado</div>
+                  <div class="empty-table-desc">Preencha os dados do contrato e clique em Calcular.</div>
+                </div>
+              </td></tr>
+            </tbody>
+          </table>
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
 
-    <footer class="site-footer">
-      <span>NJK Dynamics · Finalyze</span>
-      <span id="footerTs" class="footer-ts"></span>
-    </footer>
-  </div>
+  </main>
+</div>
 
-  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+<div class="toast-container" id="toast-container"></div>
 
-  <script src="../../src/pages/finalyze.js"></script>
+<script>
+  /* ── CONFIG ── */
+  const API_URL = 'https://njk-api.onrender.com';
+  let currentStep = 1;
+  let selectedCliente = null;
+  let selectedAmort = 'SAC';
+  let currentMode = 'upload';
+  let tabelaAmort = [];
+
+  /* ── CLOCK ── */
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('topbar-clock').textContent =
+      now.toLocaleDateString('pt-BR') + '  ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }
+  updateClock(); setInterval(updateClock, 1000);
+
+  /* ── TOAST ── */
+  function showToast(type, title, msg) {
+    const icons = {success:'✅',error:'❌',info:'💡'};
+    const c = document.getElementById('toast-container');
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    t.innerHTML = '<span class="toast-icon">' + icons[type] + '</span><div><div class="toast-title">' + title + '</div><div class="toast-msg">' + msg + '</div></div>';
+    c.appendChild(t);
+    setTimeout(() => { t.classList.add('fade-out'); setTimeout(() => t.remove(), 250); }, 3500);
+  }
+
+  /* ── STEPS ── */
+  function setStep(n) {
+    currentStep = n;
+    [1,2,3,4].forEach(i => {
+      const el = document.getElementById('step-' + i);
+      el.classList.remove('active','done');
+      if (i < n) el.classList.add('done');
+      if (i === n) el.classList.add('active');
+    });
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('show'));
+    if (n === 1) document.getElementById('sec-cliente').classList.add('show');
+    if (n === 2) document.getElementById('sec-contrato').classList.add('show');
+    if (n >= 3) { document.getElementById('sec-resultado').classList.add('show'); document.getElementById('sec-contrato').classList.add('show'); }
+  }
+
+  function goToStep1() { setStep(1); }
+  function goToStep2() {
+    if (!selectedCliente) { showToast('error','Cliente obrigatório','Selecione um cliente antes de prosseguir.'); return; }
+    setStep(2);
+  }
+
+  /* ── CLIENTES ── */
+  async function loadClientes() {
+    try {
+      const r = await fetch(API_URL + '/api/clientes?status=ativo&limite=500');
+      const d = await r.json();
+      const sel = document.getElementById('select-cliente');
+      sel.innerHTML = '<option value="">— Selecione o cliente —</option>';
+      (d.clientes || []).forEach(c => {
+        const o = document.createElement('option');
+        o.value = JSON.stringify(c);
+        o.textContent = c.nome;
+        sel.appendChild(o);
+      });
+    } catch {
+      showToast('error','Erro','Não foi possível carregar clientes do Dataware.');
+    }
+  }
+
+  function onClienteChange() {
+    const val = document.getElementById('select-cliente').value;
+    if (!val) { selectedCliente = null; document.getElementById('client-info').classList.remove('show'); document.getElementById('btn-step2').disabled = true; return; }
+    selectedCliente = JSON.parse(val);
+    document.getElementById('ci-id').textContent = '#' + selectedCliente.id;
+    document.getElementById('ci-status').textContent = selectedCliente.status;
+    document.getElementById('ci-data').textContent = formatDate(selectedCliente.criado_em);
+    document.getElementById('client-info').classList.add('show');
+    document.getElementById('btn-step2').disabled = false;
+    document.getElementById('f-tomador-display') && (document.getElementById('f-tomador-display').textContent = selectedCliente.nome);
+  }
+
+  /* ── MODO ── */
+  function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('mode-upload').classList.toggle('selected', mode === 'upload');
+    document.getElementById('mode-manual').classList.toggle('selected', mode === 'manual');
+    document.getElementById('area-upload').style.display = mode === 'upload' ? 'block' : 'none';
+  }
+
+  /* ── FILE UPLOAD ── */
+  function onFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    document.getElementById('upload-file-name').textContent = file.name;
+    document.getElementById('upload-file-info').classList.add('show');
+    showToast('info','PDF selecionado',file.name + ' pronto para extração.');
+  }
+
+  function processOCR() {
+    showToast('info','OCR','Extração via IA será implementada no backend. Preencha os campos manualmente por enquanto.');
+    setMode('manual');
+  }
+
+  /* ── AMORTIZAÇÃO ── */
+  function setAmort(type) {
+    selectedAmort = type;
+    document.querySelectorAll('.amort-tab').forEach((t,i) => {
+      t.classList.toggle('active', ['SAC','PRICE','CUSTOM'][i] === type);
+    });
+    document.getElementById('amort-custom-area').style.display = type === 'CUSTOM' ? 'block' : 'none';
+  }
+
+  function onToggleCorrecao() {
+    const checked = document.getElementById('toggle-correcao').checked;
+    document.getElementById('index-select').classList.toggle('show', checked);
+  }
+
+  /* ── MÁSCARA DINHEIRO ── */
+  function maskMoney(el) {
+    let v = el.value.replace(/\D/g,'');
+    v = (parseInt(v||0)/100).toFixed(2);
+    el.value = v.replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  }
+
+  function parseMoney(s) {
+    return parseFloat((s||'0').replace(/\./g,'').replace(',','.')) || 0;
+  }
+
+  function fmtMoney(v) {
+    return 'R$ ' + v.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  }
+
+  function fmtDate(d) {
+    return d.toLocaleDateString('pt-BR');
+  }
+
+  function formatDate(iso) {
+    if (!iso) return '--';
+    try { return new Date(iso).toLocaleDateString('pt-BR'); } catch { return iso; }
+  }
+
+  /* ── CALCULAR ── */
+  function calcular() {
+    const valor    = parseMoney(document.getElementById('f-valor').value);
+    const taxaAA   = parseFloat(document.getElementById('f-taxa').value) || 0;
+    const nParcelas = parseInt(document.getElementById('f-parcelas').value) || 0;
+    const primeiraStr = document.getElementById('f-primeira').value;
+
+    if (!valor || !taxaAA || !nParcelas || !primeiraStr) {
+      showToast('error','Campos obrigatórios','Preencha: Valor, Taxa, Nº de Parcelas e Data da 1ª Parcela.');
+      return;
+    }
+
+    const taxaAM = taxaAA / 100 / 12;
+    const primeira = new Date(primeiraStr + 'T12:00:00');
+    const hoje = new Date();
+    const correcao = document.getElementById('toggle-correcao').checked;
+    const indice = document.getElementById('f-indice').value;
+
+    tabelaAmort = [];
+    let saldo = valor;
+
+    for (let i = 1; i <= nParcelas; i++) {
+      const venc = new Date(primeira);
+      venc.setMonth(venc.getMonth() + (i - 1));
+
+      const juros = saldo * taxaAM;
+      let principal, prestacao;
+
+      if (selectedAmort === 'SAC') {
+        principal = valor / nParcelas;
+        prestacao = principal + juros;
+      } else if (selectedAmort === 'PRICE') {
+        prestacao = valor * (taxaAM * Math.pow(1+taxaAM, nParcelas)) / (Math.pow(1+taxaAM, nParcelas) - 1);
+        principal = prestacao - juros;
+      } else {
+        principal = valor / nParcelas;
+        prestacao = principal + juros;
+      }
+
+      saldo -= principal;
+      if (saldo < 0.01) saldo = 0;
+
+      const isLiquidada = venc < hoje;
+      let status = isLiquidada ? 'liquidada' : (venc < hoje ? 'vencida' : 'aberta');
+      if (!isLiquidada && venc < hoje) status = 'vencida';
+      if (isLiquidada) status = 'liquidada';
+      if (!isLiquidada && venc >= hoje) status = 'aberta';
+
+      // Correção simples para parcelas em aberto
+      let prestacaoCorrigida = prestacao;
+      if (correcao && !isLiquidada) {
+        const mesesAtraso = Math.max(0, Math.floor((hoje - venc) / (1000*60*60*24*30)));
+        if (mesesAtraso > 0) {
+          prestacaoCorrigida = prestacao * Math.pow(1 + taxaAM, mesesAtraso);
+          status = 'vencida';
+        }
+      }
+
+      tabelaAmort.push({ n: i, venc, principal, juros, prestacao: prestacaoCorrigida, saldo: Math.max(0,saldo), status });
+    }
+
+    renderTabela();
+    calcKPIs(valor, taxaAA);
+    setStep(3);
+    habilitarExports();
+    showToast('success','Calculado!', nParcelas + ' parcelas · Sistema ' + selectedAmort);
+  }
+
+  function renderTabela() {
+    const tbody = document.getElementById('amort-tbody');
+    const sistema = selectedAmort;
+    document.getElementById('table-info-sub').textContent = tabelaAmort.length + ' parcelas · Sistema ' + sistema;
+
+    tbody.innerHTML = tabelaAmort.map(p => {
+      const badgeClass = 'badge-' + p.status;
+      const badgeLabel = p.status === 'liquidada' ? 'Liquidada' : p.status === 'vencida' ? 'Vencida' : 'Em aberto';
+      const rowClass = p.status === 'aberta' ? 'future' : '';
+      return '<tr class="' + rowClass + '">' +
+        '<td>' + p.n + '</td>' +
+        '<td>' + fmtDate(p.venc) + '</td>' +
+        '<td>' + fmtMoney(p.principal) + '</td>' +
+        '<td>' + fmtMoney(p.juros) + '</td>' +
+        '<td><strong>' + fmtMoney(p.prestacao) + '</strong></td>' +
+        '<td>' + fmtMoney(p.saldo) + '</td>' +
+        '<td><span class="' + badgeClass + '">' + badgeLabel + '</span></td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  function calcKPIs(valor, taxaAA) {
+    const abertas = tabelaAmort.filter(p => p.status !== 'liquidada');
+    const saldoAtual = abertas.length > 0 ? abertas[0].saldo + abertas[0].principal : 0;
+    const totalJuros = tabelaAmort.reduce((s,p) => s + p.juros, 0);
+    const cet = taxaAA;
+
+    document.getElementById('kpi-saldo').textContent = fmtMoney(saldoAtual);
+    document.getElementById('kpi-saldo-sub').textContent = abertas.length + ' parcelas restantes';
+    document.getElementById('kpi-juros').textContent = fmtMoney(totalJuros);
+    document.getElementById('kpi-juros-sub').textContent = ((totalJuros/valor)*100).toFixed(1) + '% do valor financiado';
+    document.getElementById('kpi-cet').textContent = cet.toFixed(2) + '%';
+  }
+
+  function habilitarExports() {
+    ['sidebar-excel','sidebar-pdf'].forEach(id => {
+      const el = document.getElementById(id);
+      el.style.opacity = '1'; el.style.pointerEvents = 'auto';
+    });
+  }
+
+  /* ── EXPORTS (STUB) ── */
+  function exportExcel() {
+    if (!tabelaAmort.length) { showToast('error','Sem dados','Calcule a amortização primeiro.'); return; }
+    showToast('info','Excel','Geração de planilha será implementada no backend.');
+  }
+
+  function exportPDF() {
+    if (!tabelaAmort.length) { showToast('error','Sem dados','Calcule a amortização primeiro.'); return; }
+    showToast('info','PDF','Geração de PDF será implementada no backend.');
+  }
+
+  function salvarSupabase() {
+    if (!tabelaAmort.length) { showToast('error','Sem dados','Calcule a amortização primeiro.'); return; }
+    showToast('info','Supabase','Registro no banco será implementado com o backend.');
+  }
+
+  function limparForm() {
+    ['f-numero','f-agente','f-linha','f-valor','f-taxa','f-parcelas'].forEach(id => {
+      const el = document.getElementById(id); if(el) el.value = '';
+    });
+    ['f-emissao','f-primeira'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    tabelaAmort = [];
+  }
+
+  /* ── INIT ── */
+  loadClientes();
+  setMode('upload');
+</script>
 </body>
 </html>
