@@ -1,15 +1,8 @@
-{
+json{
   "version": 2,
-<<<<<<< HEAD
-  "rewrites": [
-    { "source": "/", "destination": "/apps/nexus/index.html" },
-    { "source": "/dataware", "destination": "/apps/dataware/index.html" },
-    { "source": "/finalyze", "destination": "/apps/finalyze/index.html" }
-=======
   "routes": [
     { "src": "/", "dest": "/apps/nexus/index.html" },
     { "src": "/dataware", "dest": "/apps/dataware/index.html" },
     { "src": "/finalyze", "dest": "/apps/finalyze/index.html" }
->>>>>>> 3a7493168a63a1c9ad7395f950cf632953428523
   ]
 }
